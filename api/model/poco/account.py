@@ -35,9 +35,9 @@ class Account:
     id: str
     name: str
     type: str
-    balance: int
+    balance: float
     
-    def __init__(self, id: str, name: str, type: str, balance: int):
+    def __init__(self, id: str, name: str, type: str, balance: float):
         self.id = id
         self.name = name
         self.type = type

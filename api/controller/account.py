@@ -1,10 +1,10 @@
 import uuid
 
-from data.constant import SUPPORTED_BANK_ACCOUNT_TYPE, USER_ERR_1
+from data.constant import SUPPORTED_BANK_ACCOUNT_TYPE, USER_ERR_1, USER_ERR_2
 from flask import request
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, validates, ValidationError
 from model.db import accounts
 from model.poco.account import Account
 
@@ -22,7 +22,17 @@ class AccountsSchema(Schema):
     id = fields.Str(dump_only=True)
     name = fields.Str(required=True)
     type = fields.Str(required=True)
-    balance = fields.Int(required=True)
+    balance = fields.Float(required=True)
+    
+    @validates('name')
+    def validate_name(self, name):
+        if not name:
+            raise ValidationError(USER_ERR_2)
+    
+    @validates('type')
+    def validate_type(self, type):
+        if type not in SUPPORTED_BANK_ACCOUNT_TYPE:
+            raise ValidationError(USER_ERR_1)
 
 
 @blp.route("/account")
@@ -34,9 +44,9 @@ class Accounts(MethodView):
         """
         return accounts
 
-    @blp.arguments(AccountsSchema)
-    @blp.response(201, AccountsSchema)
-    def post(cls, account_data):
+    @blp.arguments(AccountsSchema, as_kwargs=True)
+    @blp.response(201, AccountsSchema(only=["id"]))
+    def post(cls, name, type, balance):
         """ Create a bank account
 
         A bank account has 3 attributes:
@@ -69,14 +79,11 @@ class Accounts(MethodView):
         Args:
             account_data (dict): Account data
         """
-        if account_data['type'] not in SUPPORTED_BANK_ACCOUNT_TYPE:
-            abort(422, message=USER_ERR_1)
-
         account = Account(
             id=uuid.uuid4().hex,
-            name=account_data['name'],
-            type=account_data['type'],
-            balance=account_data['balance']
+            name=name,
+            type=type,
+            balance=balance
         )
 
         accounts.append(account)
