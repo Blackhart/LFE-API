@@ -93,6 +93,25 @@ class Accounts(MethodView):
 @blp.route("/accounts/<account_uid>")
 class AccountsByUid(MethodView):
     
+    @blp.response(200, AccountSchema)
+    def get(self, account_uid):
+        """ Get a bank account
+
+        -----
+
+        Args:
+            account_uid (str): Account uid to get
+        """
+        idx = [idx for idx, account in enumerate(accounts) if account.id == account_uid]
+        
+        if not idx:
+            abort(404, message=USER_ERR_3)
+            
+        idx_to_get = next(iter(idx))
+            
+        return accounts[idx_to_get]
+    
+    
     @blp.arguments(AccountSchema(only=['name']), as_kwargs=True)
     @blp.response(200, AccountSchema)
     def patch(self, name, account_uid):
