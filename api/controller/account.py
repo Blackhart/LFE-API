@@ -73,7 +73,7 @@ class Accounts(MethodView):
         
         The account balance in Euro. It is defined by the user at creation and automatically calculated afterward (based on banking transactions).
         
-        ------------------------------
+        -----
         
         Args:
             account_data (dict): Account data
@@ -93,11 +93,34 @@ class Accounts(MethodView):
 @blp.route("/accounts/<account_uid>")
 class AccountsByUid(MethodView):
     
+    @blp.arguments(AccountSchema(only=['name']), as_kwargs=True)
+    @blp.response(200, AccountSchema)
+    def patch(self, name, account_uid):
+        """ Update the name of a bank account
+
+        -----
+
+        Args:
+            name (str): New name of the bank account
+            account_uid (str): Account uid to update
+        """
+        idx = [idx for idx, account in enumerate(accounts) if account.id == account_uid]
+        
+        if not idx:
+            abort(404, message=USER_ERR_3)
+            
+        idx_to_update = next(iter(idx))
+            
+        accounts[idx_to_update].name = name
+        
+        return accounts[idx_to_update]
+    
+    
     @blp.response(200)
     def delete(self, account_uid):
         """ Delete a bank account
 
-        ------------------------------
+        -----
 
         Args:
             account_uid (str): Account uid to delete
