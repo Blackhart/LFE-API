@@ -1,6 +1,6 @@
 import uuid
 
-from data.constant import SUPPORTED_BANK_ACCOUNT_TYPE, USER_ERR_1, USER_ERR_2
+from data.constant import SUPPORTED_BANK_ACCOUNT_TYPE, USER_ERR_1, USER_ERR_2, USER_ERR_3
 from flask import request
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
@@ -14,10 +14,8 @@ blp = Blueprint("Accounts",
                 description="Operations on bank accounts")
 
 
-class AccountsSchema(Schema):
+class AccountSchema(Schema):
     """ Schema for a bank account
-
-    The schema is used for validating input data during a POST request to /account
     """
     id = fields.Str(dump_only=True)
     name = fields.Str(required=True)
@@ -35,18 +33,18 @@ class AccountsSchema(Schema):
             raise ValidationError(USER_ERR_1)
 
 
-@blp.route("/account")
+@blp.route("/accounts")
 class Accounts(MethodView):
 
-    @blp.response(200, AccountsSchema(many=True))
+    @blp.response(200, AccountSchema(many=True))
     def get(self):
         """ Get all bank accounts
         """
         return accounts
 
-    @blp.arguments(AccountsSchema, as_kwargs=True)
-    @blp.response(201, AccountsSchema(only=["id"]))
-    def post(cls, name, type, balance):
+    @blp.arguments(AccountSchema, as_kwargs=True)
+    @blp.response(201, AccountSchema(only=["id"]))
+    def post(self, name, type, balance):
         """ Create a bank account
 
         A bank account has 3 attributes:
@@ -54,8 +52,7 @@ class Accounts(MethodView):
             2. A type
             3. A balance
         
-        Attributes
-        ----------
+        Attributes:
         
         1. Account Name
         
@@ -76,6 +73,8 @@ class Accounts(MethodView):
         
         The account balance in Euro. It is defined by the user at creation and automatically calculated afterward (based on banking transactions).
         
+        ------------------------------
+        
         Args:
             account_data (dict): Account data
         """
@@ -89,3 +88,25 @@ class Accounts(MethodView):
         accounts.append(account)
 
         return account
+
+
+@blp.route("/accounts/<account_uid>")
+class AccountsByUid(MethodView):
+    
+    @blp.response(200)
+    def delete(self, account_uid):
+        """ Delete a bank account
+
+        ------------------------------
+
+        Args:
+            account_uid (str): Account uid to delete
+        """
+        idx = [idx for idx, account in enumerate(accounts) if account.id == account_uid]
+        
+        if not idx:
+            abort(404, message=USER_ERR_3)
+        
+        idx_to_remove = next(iter(idx))
+        
+        accounts.pop(idx_to_remove)
