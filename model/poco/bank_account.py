@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class Account:
+class BankAccount:
     """ An object representing a bank account
     
     A bank account has 3 attributes:
@@ -26,7 +26,7 @@ class Account:
             - Industrial development account (Codevi)
             - Home savings plan (PEL) and home savings account (CEL)
             - Retirement savings plan (PERP) and collective retirement savings plan (Perco).
-            - Investment Account: a securities account for investment products in the stock market (purchase of mutual funds, stocks, bonds, etc.) and the equity savings plan (PEA).
+        - Investment Account: a securities account for investment products in the stock market (purchase of mutual funds, stocks, bonds, etc.) and the equity savings plan (PEA).
     
     3. Account Balance
     
