@@ -17,5 +17,6 @@ GET_BANK_ACCOUNT_ENTRY_POINT = 'bank-accounts/{id}'
 
 CREATE_EXPENSE_GROUP_ENTRY_POINT = 'expense-groups'
 DELETE_EXPENSE_GROUP_ENTRY_POINT = 'expense-groups/{id}'
+RENAME_EXPENSE_GROUP_ENTRY_POINT = 'expense-groups/{id}/name'
 LIST_EXPENSE_GROUPS_ENTRY_POINT = 'expense-groups'
 GET_EXPENSE_GROUP_ENTRY_POINT = 'expense-groups/{id}'

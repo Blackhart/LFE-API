@@ -18,6 +18,20 @@ Feature: Expense Group Operations
         When the user deletes an expense group using an invalid id
         Then the system returns error 3
 
+    Scenario: Rename an expense group name
+        Given an expense group is created
+        When the user renames the expense group name to "My Renamed Expense Group"
+        Then the system renames the expense group name to "My Renamed Expense Group"
+
+    Scenario: Rename a expense group name with an invalid id
+        When the user renames a expense group name using an invalid id
+        Then the system returns error 3
+
+    Scenario: Rename a expense group name to an empty name
+        Given an expense group is created
+        When the user renames the expense group name to an empty name
+        Then the system returns error 1
+
     Scenario: List expense groups
         Given an expense group named "List expense groups - Group 1" is created
         And an expense group named "List expense groups - Group 2" is created

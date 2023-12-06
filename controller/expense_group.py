@@ -112,3 +112,34 @@ class ExpenseGroupsByUid(MethodView):
         idx_to_remove = next(iter(idx))
 
         expense_groups.pop(idx_to_remove)
+
+
+@blp.route("/expense-groups/<id>/name")
+class ExpenseGroupsName(MethodView):
+
+    @blp.arguments(ExpenseGroupSchema(only=['name']), as_kwargs=True)
+    @blp.response(200, ExpenseGroupSchema)
+    def patch(self, name, id):
+        """ Update the name of an expense group
+
+        -----
+
+        Args:
+            name (str): New name of the expense group
+            id (str): Expense group uid to update
+        """
+        idx = [
+            idx
+            for idx, group
+            in enumerate(expense_groups)
+            if group.id == id
+        ]
+
+        if not idx:
+            abort(404, message=USER_ERR_3)
+
+        idx_to_update = next(iter(idx))
+
+        expense_groups[idx_to_update].name = name
+
+        return expense_groups[idx_to_update]

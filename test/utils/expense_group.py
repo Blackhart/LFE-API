@@ -3,6 +3,7 @@ import requests
 from api.test.constant import STAGGING_BASE_URL
 from api.test.constant import CREATE_EXPENSE_GROUP_ENTRY_POINT
 from api.test.constant import DELETE_EXPENSE_GROUP_ENTRY_POINT
+from api.test.constant import RENAME_EXPENSE_GROUP_ENTRY_POINT
 from api.test.constant import LIST_EXPENSE_GROUPS_ENTRY_POINT
 from api.test.constant import GET_EXPENSE_GROUP_ENTRY_POINT
 
@@ -13,6 +14,10 @@ def get_create_expense_group_url():
 
 def get_delete_expense_group_url(id):
     return STAGGING_BASE_URL + '/' + DELETE_EXPENSE_GROUP_ENTRY_POINT.format(id=id)
+
+
+def get_rename_expense_group_name_url(id):
+    return STAGGING_BASE_URL + '/' + RENAME_EXPENSE_GROUP_ENTRY_POINT.format(id=id)
 
 
 def get_list_expense_groups_url():
@@ -65,6 +70,30 @@ def delete_expense_group(id):
             'errors': json.get('errors')
         }
         
+
+def rename_expense_group(id, name='My Renamed Account'):
+    url = get_rename_expense_group_name_url(id)
+    payload = {
+        "name": name
+    }
+
+    answer = requests.patch(url, json=payload)
+    json = answer.json()
+
+    if answer.ok:
+        return {
+            'code': answer.status_code,
+            'id': json['id'],
+            'name': json['name']
+        }
+    else:
+        return {
+            'code': answer.status_code,
+            'status': json['status'],
+            'message': json.get('message'),
+            'errors': json.get('errors')
+        }
+            
 
 def list_expense_groups():
     url = get_list_expense_groups_url()

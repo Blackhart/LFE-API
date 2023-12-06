@@ -159,7 +159,7 @@ def step_impl(context):
 
 @when('the user renames the bank account name to "{name}"')
 def step_impl(context, name):
-    id = context.created[0]['id']
+    id = context.last['id']
 
     answer = rename_bank_account(id, name)
 
