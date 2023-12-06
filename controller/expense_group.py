@@ -89,3 +89,26 @@ class ExpenseGroupsByUid(MethodView):
         idx_to_get = next(iter(idx))
 
         return expense_groups[idx_to_get]
+
+    @blp.response(200)
+    def delete(self, id):
+        """ Delete an expense group
+
+        -----
+
+        Args:
+            id (str): Expense group uid to delete
+        """
+        idx = [
+            idx
+            for idx, group
+            in enumerate(expense_groups)
+            if group.id == id
+        ]
+
+        if not idx:
+            abort(404, message=USER_ERR_3)
+
+        idx_to_remove = next(iter(idx))
+
+        expense_groups.pop(idx_to_remove)

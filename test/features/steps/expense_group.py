@@ -1,6 +1,7 @@
 from behave import *
 
 from api.test.utils.expense_group import create_expense_group
+from api.test.utils.expense_group import delete_expense_group
 from api.test.utils.expense_group import list_expense_groups
 from api.test.utils.expense_group import get_expense_group
 
@@ -16,6 +17,7 @@ def step_impl(context, name):
     context.last = answer
 
 
+@given('an expense group is created')
 @when('the user creates an expense group')
 def step_impl(context):
     name = 'the user creates an expense group'
@@ -79,6 +81,32 @@ def step_impl(context):
     context.last = answer
 
 
+@when('the user deletes the expense group')
+def step_impl(context):
+    id = context.created[0]['id']
+
+    answer = delete_expense_group(id)
+
+    if not hasattr(context, 'deleted'):
+        context.deleted = []
+
+    context.deleted.append(answer)
+    context.last = answer
+    
+
+@when('the user deletes an expense group using an invalid id')
+def step_impl(context):
+    id = 'invalid group id'
+
+    answer = delete_expense_group(id)
+
+    if not hasattr(context, 'deleted'):
+        context.deleted = []
+
+    context.deleted.append(answer)
+    context.last = answer
+    
+
 @then('the system creates the expense group')
 def step_impl(context):
     assert context.last['code'] == 201
@@ -121,3 +149,8 @@ def step_impl(context):
             assert False
 
     assert True
+    
+
+@then('the system deletes the expense group')
+def step_impl(context):
+    assert context.last['code'] == 200

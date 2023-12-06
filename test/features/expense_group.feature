@@ -9,6 +9,15 @@ Feature: Expense Group Operations
         When the user creates an expense group with an empty name
         Then the system returns error 1
 
+    Scenario: Delete an expense group
+        Given an expense group is created
+        When the user deletes the expense group
+        Then the system deletes the expense group
+
+    Scenario: Delete an expense group using an invalid id
+        When the user deletes an expense group using an invalid id
+        Then the system returns error 3
+
     Scenario: List expense groups
         Given an expense group named "List expense groups - Group 1" is created
         And an expense group named "List expense groups - Group 2" is created

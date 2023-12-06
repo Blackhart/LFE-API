@@ -14,20 +14,20 @@ def get_create_bank_account_url():
     return STAGGING_BASE_URL + '/' + CREATE_BANK_ACCOUNT_ENTRY_POINT
 
 
-def get_delete_bank_account_url(bank_account_id):
-    return STAGGING_BASE_URL + '/' + DELETE_BANK_ACCOUNT_ENTRY_POINT.format(id=bank_account_id)
+def get_delete_bank_account_url(id):
+    return STAGGING_BASE_URL + '/' + DELETE_BANK_ACCOUNT_ENTRY_POINT.format(id=id)
 
 
-def get_rename_bank_account_name_url(bank_account_id):
-    return STAGGING_BASE_URL + '/' + RENAME_BANK_ACCOUNT_ENTRY_POINT.format(id=bank_account_id)
+def get_rename_bank_account_name_url(id):
+    return STAGGING_BASE_URL + '/' + RENAME_BANK_ACCOUNT_ENTRY_POINT.format(id=id)
 
 
 def get_list_bank_accounts_url():
     return STAGGING_BASE_URL + '/' + LIST_BANK_ACCOUNTS_ENTRY_POINT
 
 
-def get_get_bank_account_url(bank_account_id):
-    return STAGGING_BASE_URL + '/' + GET_BANK_ACCOUNT_ENTRY_POINT.format(id=bank_account_id)
+def get_get_bank_account_url(id):
+    return STAGGING_BASE_URL + '/' + GET_BANK_ACCOUNT_ENTRY_POINT.format(id=id)
 
 
 def create_bank_account(name="My Bank Account", type=BankAccountType.STANDARD, balance=0.0):
@@ -58,8 +58,8 @@ def create_bank_account(name="My Bank Account", type=BankAccountType.STANDARD, b
         }
 
 
-def delete_bank_account(bank_account_id):
-    url = get_delete_bank_account_url(bank_account_id)
+def delete_bank_account(id):
+    url = get_delete_bank_account_url(id)
 
     answer = requests.delete(url)
     json = answer.json()
@@ -77,8 +77,8 @@ def delete_bank_account(bank_account_id):
         }
 
 
-def rename_bank_account(bank_account_id, name='My Renamed Account'):
-    url = get_rename_bank_account_name_url(bank_account_id)
+def rename_bank_account(id, name='My Renamed Account'):
+    url = get_rename_bank_account_name_url(id)
     payload = {
         "name": name
     }
@@ -133,8 +133,8 @@ def list_bank_accounts():
         }
 
 
-def get_bank_account(bank_account_id):
-    url = get_get_bank_account_url(bank_account_id)
+def get_bank_account(id):
+    url = get_get_bank_account_url(id)
 
     answer = requests.get(url)
     json = answer.json()
