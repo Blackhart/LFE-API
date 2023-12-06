@@ -1,6 +1,7 @@
 from behave import *
 
 from api.test.utils.expense_group import create_expense_group
+from api.test.utils.expense_group import list_expense_groups
 from api.test.utils.expense_group import get_expense_group
 
 
@@ -67,6 +68,17 @@ def step_impl(context):
     context.last = answer
 
 
+@when('the user list the expense groups')
+def step_impl(context):
+    answer = list_expense_groups()
+
+    if not hasattr(context, 'listed'):
+        context.listed = []
+
+    context.listed.append(answer)
+    context.last = answer
+
+
 @then('the system creates the expense group')
 def step_impl(context):
     assert context.last['code'] == 201
@@ -90,3 +102,22 @@ def step_impl(context):
 
     assert created['id'] == retrieved['id']
     assert created['name'] == retrieved['name']
+
+
+@then('the system returns the three created expense groups')
+def step_impl(context):
+    listed = context.listed
+    created = context.created
+
+    for item_created in created:
+        found = False
+
+        for item_listed in listed[0]['items']:
+
+            if item_created['id'] == item_listed['id'] and item_created['name'] == item_listed['name']:
+                found = True
+                
+        if not found:
+            assert False
+
+    assert True

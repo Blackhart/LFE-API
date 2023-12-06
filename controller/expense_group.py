@@ -29,6 +29,12 @@ class ExpenseGroupSchema(Schema):
 @blp.route("/expense-groups")
 class ExpenseGroups(MethodView):
 
+    @blp.response(200, ExpenseGroupSchema(many=True))
+    def get(self):
+        """ Get all expense groups
+        """
+        return expense_groups
+
     @blp.arguments(ExpenseGroupSchema, as_kwargs=True)
     @blp.response(201, ExpenseGroupSchema(only=["id"]))
     def post(self, name):
