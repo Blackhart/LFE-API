@@ -16,6 +16,6 @@ SUPPORTED_BANK_ACCOUNT_TYPE = [
 # USER ERRORS #
 ###############
 
-USER_ERR_1 = 'Bank account type is not supported. Should be one of {Type}.'.format(Type=SUPPORTED_BANK_ACCOUNT_TYPE)
-USER_ERR_2 = 'Name should not be empty.'
+USER_ERR_1 = 'Name should not be empty.'
+USER_ERR_2 = 'Bank account type is not supported. Should be one of {Type}.'.format(Type=SUPPORTED_BANK_ACCOUNT_TYPE)
 USER_ERR_3 = 'Bank account ID not found.'

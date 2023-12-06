@@ -6,6 +6,7 @@ from flask import Flask
 from flask_smorest import Api
 
 from controller.bank_account import blp as BankAccountBlueprint
+from controller.expense_group import blp as ExpenseGroupBlueprint
 
 
 app = Flask(__name__)
@@ -21,3 +22,4 @@ app.config["OPENAPI_SWAGGER_UI_URL"] = "https://cdn.jsdelivr.net/npm/swagger-ui-
 api = Api(app)
 
 api.register_blueprint(BankAccountBlueprint)
+api.register_blueprint(ExpenseGroupBlueprint)

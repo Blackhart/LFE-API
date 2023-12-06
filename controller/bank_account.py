@@ -7,7 +7,7 @@ from marshmallow import Schema, fields, validates, ValidationError
 from api.model.db import bank_accounts
 from api.model.poco.bank_account import BankAccount
 from api.data.constant import SUPPORTED_BANK_ACCOUNT_TYPE
-from api.data.constant import USER_ERR_1, USER_ERR_2, USER_ERR_3
+from api.data.constant import USER_ERR_2, USER_ERR_1, USER_ERR_3
 
 
 blp = Blueprint("Bank Accounts",
@@ -26,12 +26,12 @@ class BankAccountSchema(Schema):
     @validates('name')
     def validate_name(self, name):
         if not name or not name.strip():
-            raise ValidationError(USER_ERR_2)
+            raise ValidationError(USER_ERR_1)
 
     @validates('type')
     def validate_type(self, type):
         if type not in SUPPORTED_BANK_ACCOUNT_TYPE:
-            raise ValidationError(USER_ERR_1)
+            raise ValidationError(USER_ERR_2)
 
 
 @blp.route("/bank-accounts")
