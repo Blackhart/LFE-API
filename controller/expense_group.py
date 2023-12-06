@@ -1,12 +1,12 @@
 import uuid
 
 from flask.views import MethodView
-from flask_smorest import Blueprint
+from flask_smorest import Blueprint, abort
 from marshmallow import Schema, fields, validates, ValidationError
 
 from api.model.db import expense_groups
 from api.model.poco.expense_group import ExpenseGroup
-from api.data.constant import USER_ERR_1
+from api.data.constant import USER_ERR_1, USER_ERR_3
 
 
 blp = Blueprint("Expense Groups",
@@ -56,3 +56,30 @@ class ExpenseGroups(MethodView):
         expense_groups.append(group)
 
         return group
+
+
+@blp.route("/expense-groups/<id>")
+class ExpenseGroupsByUid(MethodView):
+
+    @blp.response(200, ExpenseGroupSchema)
+    def get(self, id):
+        """ Get an expense group
+
+        -----
+
+        Args:
+            id (str): group uid to get
+        """
+        idx = [
+            idx
+            for idx, group
+            in enumerate(expense_groups)
+            if group.id == id
+        ]
+
+        if not idx:
+            abort(404, message=USER_ERR_3)
+
+        idx_to_get = next(iter(idx))
+
+        return expense_groups[idx_to_get]

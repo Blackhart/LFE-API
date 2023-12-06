@@ -103,7 +103,7 @@ class BankAccountsByUid(MethodView):
         -----
 
         Args:
-            account_uid (str): Account uid to get
+            id (str): Account uid to get
         """
         idx = [
             idx
@@ -126,7 +126,7 @@ class BankAccountsByUid(MethodView):
         -----
 
         Args:
-            account_uid (str): Account uid to delete
+            id (str): Account uid to delete
         """
         idx = [
             idx
@@ -155,7 +155,7 @@ class BankAccountsName(MethodView):
 
         Args:
             name (str): New name of the bank account
-            account_uid (str): Account uid to update
+            id (str): Account uid to update
         """
         idx = [
             idx
