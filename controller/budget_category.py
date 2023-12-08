@@ -9,7 +9,7 @@ from api.model.dal.budget_category import get_budget_category
 from api.model.dal.budget_category import delete_budget_category
 from api.model.dal.budget_category import rename_budget_category
 from api.model.dal.budget_group import is_budget_group_exists
-from api.data.constant import USER_ERR_1, USER_ERR_4
+from api.data.constant import USER_ERR_1, USER_ERR_4, USER_ERR_3
 
 
 blp = Blueprint("Budget Categories",
