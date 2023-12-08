@@ -2,12 +2,12 @@ import requests
 
 from api.model.poco.bank_account_type import BankAccountType
 
-from api.test.constant import STAGGING_BASE_URL
-from api.test.constant import CREATE_BANK_ACCOUNT_ENTRY_POINT
-from api.test.constant import DELETE_BANK_ACCOUNT_ENTRY_POINT
-from api.test.constant import RENAME_BANK_ACCOUNT_ENTRY_POINT
-from api.test.constant import LIST_BANK_ACCOUNTS_ENTRY_POINT
-from api.test.constant import GET_BANK_ACCOUNT_ENTRY_POINT
+from api.test.data.constant import STAGGING_BASE_URL
+from api.test.data.constant import CREATE_BANK_ACCOUNT_ENTRY_POINT
+from api.test.data.constant import DELETE_BANK_ACCOUNT_ENTRY_POINT
+from api.test.data.constant import RENAME_BANK_ACCOUNT_ENTRY_POINT
+from api.test.data.constant import LIST_BANK_ACCOUNTS_ENTRY_POINT
+from api.test.data.constant import GET_BANK_ACCOUNT_ENTRY_POINT
 
 
 def get_create_bank_account_url():
@@ -38,43 +38,13 @@ def create_bank_account(name="My Bank Account", type=BankAccountType.STANDARD, b
         "balance": float(balance)
     }
 
-    answer = requests.post(url, json=payload)
-    json = answer.json()
-
-    if answer.ok:
-        return {
-            'code': answer.status_code,
-            'id': json['id'],
-            'name': name,
-            'type': type,
-            'balance': balance
-        }
-    else:
-        return {
-            'code': answer.status_code,
-            'status': json['status'],
-            'message': json.get('message'),
-            'errors': json.get('errors')
-        }
+    return requests.post(url, json=payload)
 
 
 def delete_bank_account(id):
     url = get_delete_bank_account_url(id)
 
-    answer = requests.delete(url)
-    json = answer.json()
-
-    if answer.ok:
-        return {
-            'code': answer.status_code
-        }
-    else:
-        return {
-            'code': answer.status_code,
-            'status': json['status'],
-            'message': json.get('message'),
-            'errors': json.get('errors')
-        }
+    return requests.delete(url)
 
 
 def rename_bank_account(id, name='My Renamed Account'):
@@ -83,74 +53,16 @@ def rename_bank_account(id, name='My Renamed Account'):
         "name": name
     }
 
-    answer = requests.patch(url, json=payload)
-    json = answer.json()
-
-    if answer.ok:
-        return {
-            'code': answer.status_code,
-            'id': json['id'],
-            'name': json['name'],
-            'type': json['type'],
-            'balance': json['balance']
-        }
-    else:
-        return {
-            'code': answer.status_code,
-            'status': json['status'],
-            'message': json.get('message'),
-            'errors': json.get('errors')
-        }
+    return requests.patch(url, json=payload)
 
 
 def list_bank_accounts():
     url = get_list_bank_accounts_url()
 
-    answer = requests.get(url)
-    json = answer.json()
-
-    if answer.ok:
-        items = []
-
-        for item in json:
-            items.append({
-                'id': item['id'],
-                'name': item['name'],
-                'type': item['type'],
-                'balance': item['balance']
-            })
-
-        return {
-            'code': answer.status_code,
-            'items': items
-        }
-    else:
-        return {
-            'code': answer.status_code,
-            'status': json['status'],
-            'message': json.get('message'),
-            'errors': json.get('errors')
-        }
+    return requests.get(url)
 
 
 def get_bank_account(id):
     url = get_get_bank_account_url(id)
 
-    answer = requests.get(url)
-    json = answer.json()
-
-    if answer.ok:
-        return {
-            'code': answer.status_code,
-            'id': json['id'],
-            'name': json['name'],
-            'type': json['type'],
-            'balance': json['balance']
-        }
-    else:
-        return {
-            'code': answer.status_code,
-            'status': json['status'],
-            'message': json.get('message'),
-            'errors': json.get('errors')
-        }
+    return requests.get(url)

@@ -1,2 +1,3 @@
 bank_accounts = []
-expense_groups = []
+budget_groups = []
+budget_categories = []

@@ -1,0 +1,2 @@
+class IDNotFound(ValueError):
+    pass

@@ -20,7 +20,7 @@ class BankAccount:
     2. Account Type
     
     The account type is chosen by the user from the following 3 types:
-        - Classic Account: used for managing everyday expenses and known by various names such as current account, checking account, or deposit account.
+        - Classic Account: used for managing everyday budgets and known by various names such as current account, checking account, or deposit account.
         - Savings Account: an interest-bearing account. This category includes:
             - Savings account (e.g., Livret A, Livret Jeune, Livret de développement durable et solidaire – LDDS, Livret d’épargne populaire – LEP, etc.)
             - Industrial development account (Codevi)
