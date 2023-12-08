@@ -3,6 +3,7 @@ from api.data.constant import USER_ERR_1, USER_ERR_3, USER_ERR_4
 from api.test.utils.budget_category import create_budget_category
 from api.test.utils.budget_category import delete_budget_category
 from api.test.utils.budget_category import rename_budget_category
+from api.test.utils.budget_category import list_budget_categories
 from api.test.utils.budget_category import get_budget_category
 from api.test.utils.budget_group import create_budget_group
 
@@ -237,3 +238,43 @@ def test__rename_budget_category__valid__return_category_schema():
     assert 'id' in result
     assert 'name' in result
     assert 'budget_group_id' in result
+
+
+def test__list_budget_categories__created_C1_C2_C3__return_C1_C2_C3():
+    g = create_budget_group().json()['id']
+    c1 = create_budget_category(name='C1', budget_group_id=g).json()['id']
+    c2 = create_budget_category(name='C2', budget_group_id=g).json()['id']
+    c3 = create_budget_category(name='C3', budget_group_id=g).json()['id']
+
+    category_list = list_budget_categories().json()
+
+    idx = [category['id'] for category in category_list]
+
+    assert c1 in idx
+    assert c2 in idx
+    assert c3 in idx
+
+
+def test__list_budget_categories__valid__return_http_200():
+    g = create_budget_group().json()['id']
+    c1 = create_budget_category(name='C1', budget_group_id=g).json()['id']
+    c2 = create_budget_category(name='C2', budget_group_id=g).json()['id']
+    c3 = create_budget_category(name='C3', budget_group_id=g).json()['id']
+
+    result = list_budget_categories()
+
+    assert result.status_code == 200
+
+
+def test__list_budget_categories__valid__return_category_schema():
+    g = create_budget_group().json()['id']
+    c1 = create_budget_category(name='C1', budget_group_id=g).json()['id']
+    c2 = create_budget_category(name='C2', budget_group_id=g).json()['id']
+    c3 = create_budget_category(name='C3', budget_group_id=g).json()['id']
+
+    category_list = list_budget_categories().json()
+
+    for category in category_list:
+        assert 'id' in category
+        assert 'name' in category
+        assert 'budget_group_id' in category
