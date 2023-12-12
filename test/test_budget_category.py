@@ -5,6 +5,7 @@ from api.test.utils.budget_category import delete_budget_category
 from api.test.utils.budget_category import rename_budget_category
 from api.test.utils.budget_category import list_budget_categories
 from api.test.utils.budget_category import get_budget_category
+from api.test.utils.budget_category import assign_budget_group
 from api.test.utils.budget_group import create_budget_group
 
 
@@ -279,28 +280,29 @@ def test__list_budget_categories__valid__return_category_schema():
         assert 'name' in category
         assert 'budget_group_id' in category
 
+
 def test__get_budget_category__non_existing_category__return_user_error_3():
     non_existing_category = 'non existing'
-    
+
     result = get_budget_category(id=non_existing_category).json()
-    
+
     assert result['message'] == USER_ERR_3
 
 
 def test__get_budget_category__non_existing_category__return_http_404():
     non_existing_category = 'non existing'
-    
+
     result = get_budget_category(id=non_existing_category)
-    
+
     assert result.status_code == 404
 
 
 def test__get_budget_category__created_C1__return_C1():
     g = create_budget_group().json()['id']
     c1 = create_budget_category(name='C1', budget_group_id=g).json()
-    
+
     result = get_budget_category(id=c1['id']).json()
-    
+
     assert result['id'] == c1['id']
     assert result['name'] == c1['name']
     assert result['budget_group_id'] == c1['budget_group_id']
@@ -309,18 +311,99 @@ def test__get_budget_category__created_C1__return_C1():
 def test__get_budget_category__valid__return_http_200():
     g = create_budget_group().json()['id']
     c = create_budget_category(budget_group_id=g).json()['id']
-    
+
     result = get_budget_category(id=c)
-    
+
     assert result.status_code == 200
 
 
 def test__get_budget_category__valid__return_category_schema():
     g = create_budget_group().json()['id']
     c = create_budget_category(budget_group_id=g).json()['id']
-    
+
     result = get_budget_category(id=c).json()
-    
+
+    assert 'id' in result
+    assert 'name' in result
+    assert 'budget_group_id' in result
+
+
+def test__assign_budget_group__non_existing_category__return_user_error_3():
+    g = create_budget_group().json()['id']
+
+    id = 'non existing'
+
+    result = assign_budget_group(id=id, group_id=g).json()
+
+    assert result['message'] == USER_ERR_3
+
+
+def test__assign_budget_group__non_existing_category__return_http_404():
+    g = create_budget_group().json()['id']
+
+    id = 'non existing'
+
+    result = assign_budget_group(id=id, group_id=g)
+
+    assert result.status_code == 404
+
+
+def test__assign_budget_group__non_existing_group__return_user_error_4():
+    g1 = create_budget_group().json()['id']
+    g2 = 'non existing'
+    c = create_budget_category(budget_group_id=g1).json()
+
+    result = assign_budget_group(id=c['id'], group_id=g2).json()
+
+    assert result['errors']['json']['budget_group_id'][0] == USER_ERR_4
+
+
+def test__assign_budget_group__non_existing_group__return_http_422():
+    g1 = create_budget_group().json()['id']
+    g2 = 'non existing'
+    c = create_budget_category(budget_group_id=g1).json()
+
+    result = assign_budget_group(id=c['id'], group_id=g2)
+
+    assert result.status_code == 422
+
+
+def test__assign_budget_group__from_G1_to_G2__assign_G2():
+    g1 = create_budget_group().json()['id']
+    g2 = create_budget_group().json()['id']
+
+    c1 = create_budget_category(
+        budget_group_id=g1
+    ).json()
+
+    result = assign_budget_group(id=c1['id'], group_id=g2).json()
+
+    assert result['budget_group_id'] == g2
+
+
+def test__assign_budget_group__valid__return_http_200():
+    g1 = create_budget_group().json()['id']
+    g2 = create_budget_group().json()['id']
+
+    c1 = create_budget_category(
+        budget_group_id=g1
+    ).json()
+
+    result = assign_budget_group(id=c1['id'], group_id=g2)
+
+    assert result.status_code == 200
+
+
+def test__assign_budget_group__valid__return_category_schema():
+    g1 = create_budget_group().json()['id']
+    g2 = create_budget_group().json()['id']
+
+    c1 = create_budget_category(
+        budget_group_id=g1
+    ).json()
+
+    result = assign_budget_group(id=c1['id'], group_id=g2).json()
+
     assert 'id' in result
     assert 'name' in result
     assert 'budget_group_id' in result

@@ -137,3 +137,33 @@ def is_budget_category_exists(id):
         return False
 
     return True
+
+
+def assign_budget_group(id, group_id):
+    """ Rename a budget category
+
+    Args:
+        id (str): ID of the budget category
+        group_id (str): Group to assign
+
+    Raises:
+        IDNotFound: If the budget category doesn't exist
+
+    Returns:
+        BudgetCategory: The renamed budget category
+    """
+    idx = [
+        idx
+        for idx, category
+        in enumerate(budget_categories)
+        if category.id == id
+    ]
+
+    if not idx:
+        raise IDNotFound(USER_ERR_3)
+
+    idx_to_update = next(iter(idx))
+
+    budget_categories[idx_to_update].budget_group_id = group_id
+
+    return budget_categories[idx_to_update]

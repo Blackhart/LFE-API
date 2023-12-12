@@ -6,6 +6,7 @@ from api.test.data.constant import DELETE_BUDGET_CATEGORY_ENTRY_POINT
 from api.test.data.constant import RENAME_BUDGET_CATEGORY_ENTRY_POINT
 from api.test.data.constant import LIST_BUDGET_CATEGORIES_ENTRY_POINT
 from api.test.data.constant import GET_BUDGET_CATEGORY_ENTRY_POINT
+from api.test.data.constant import ASSIGN_BUDGET_GROUP_ENTRY_POINT
 
 
 def get_create_budget_category_url():
@@ -26,6 +27,10 @@ def get_list_budget_categories_url():
 
 def get_get_budget_category_url(id):
     return STAGGING_BASE_URL + '/' + GET_BUDGET_CATEGORY_ENTRY_POINT.format(id=id)
+
+
+def get_assign_budget_group_url(id):
+    return STAGGING_BASE_URL + '/' + ASSIGN_BUDGET_GROUP_ENTRY_POINT.format(id=id)
 
 
 def create_budget_category(name="My Budget Category", budget_group_id=""):
@@ -63,3 +68,12 @@ def get_budget_category(id):
     url = get_get_budget_category_url(id)
 
     return requests.get(url)
+
+
+def assign_budget_group(id, group_id):
+    url = get_assign_budget_group_url(id)
+    payload = {
+        "budget_group_id": group_id
+    }
+
+    return requests.patch(url, json=payload)

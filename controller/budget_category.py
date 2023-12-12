@@ -8,6 +8,7 @@ from api.model.dal.budget_category import create_budget_category
 from api.model.dal.budget_category import get_budget_category
 from api.model.dal.budget_category import delete_budget_category
 from api.model.dal.budget_category import rename_budget_category
+from api.model.dal.budget_category import assign_budget_group
 from api.model.dal.budget_group import is_budget_group_exists
 from api.data.constant import USER_ERR_1, USER_ERR_4, USER_ERR_3
 
@@ -106,5 +107,25 @@ class BudgetCategoriesName(MethodView):
         """
         try:
             return rename_budget_category(id, name)
+        except IDNotFound:
+            abort(404, message=USER_ERR_3)
+
+
+@blp.route("/budget-categories/<id>/budget-group-id")
+class BudgetCategoriesName(MethodView):
+
+    @blp.arguments(BudgetCategorySchema(only=['budget_group_id']), as_kwargs=True)
+    @blp.response(200, BudgetCategorySchema)
+    def patch(self, budget_group_id, id):
+        """ Update the group of a budget category
+
+        -----
+
+        Args:
+            budget_group_id (str): New group to assign
+            id (str): Budget category uid to update
+        """
+        try:
+            return assign_budget_group(id, budget_group_id)
         except IDNotFound:
             abort(404, message=USER_ERR_3)
