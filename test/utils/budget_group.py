@@ -6,6 +6,7 @@ from api.test.data.constant import DELETE_BUDGET_GROUP_ENTRY_POINT
 from api.test.data.constant import RENAME_BUDGET_GROUP_ENTRY_POINT
 from api.test.data.constant import LIST_BUDGET_GROUPS_ENTRY_POINT
 from api.test.data.constant import GET_BUDGET_GROUP_ENTRY_POINT
+from api.test.data.constant import GET_ASSIGNED_CATEGORIES_ENTRY_POINT
 
 
 def get_create_budget_group_url():
@@ -26,6 +27,10 @@ def get_list_budget_groups_url():
 
 def get_get_budget_group_url(id):
     return STAGGING_BASE_URL + '/' + GET_BUDGET_GROUP_ENTRY_POINT.format(id=id)
+
+
+def get_get_assigned_categories_url(id):
+    return STAGGING_BASE_URL + '/' + GET_ASSIGNED_CATEGORIES_ENTRY_POINT.format(id=id)
 
 
 def create_budget_group(name="My Budget Group"):
@@ -60,5 +65,11 @@ def list_budget_groups():
 
 def get_budget_group(id):
     url = get_get_budget_group_url(id)
+
+    return requests.get(url)
+
+
+def get_assigned_categories(id):
+    url = get_get_assigned_categories_url(id)
 
     return requests.get(url)

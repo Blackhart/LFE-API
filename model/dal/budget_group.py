@@ -3,6 +3,7 @@ import uuid
 from api.data.constant import USER_ERR_3
 from api.core.exceptions import IDNotFound
 from api.model.db import budget_groups
+from api.model.db import budget_categories
 from api.model.poco.budget_group import BudgetGroup
 
 
@@ -135,3 +136,25 @@ def is_budget_group_exists(id):
         return False
 
     return True
+
+
+def get_assigned_categories(group_id):
+    """ Return all categories assigned to a group
+
+    Args:
+        group_id (str): Budget group ID
+
+    Returns:
+        list: All the assigned categories
+    """
+    if not is_budget_group_exists(group_id):
+        raise IDNotFound(USER_ERR_3)
+
+    categories = [
+        category
+        for category
+        in budget_categories
+        if category.budget_group_id == group_id
+    ]
+
+    return categories

@@ -20,6 +20,7 @@ DELETE_BUDGET_GROUP_ENTRY_POINT = 'budget-groups/{id}'
 RENAME_BUDGET_GROUP_ENTRY_POINT = 'budget-groups/{id}/name'
 LIST_BUDGET_GROUPS_ENTRY_POINT = 'budget-groups'
 GET_BUDGET_GROUP_ENTRY_POINT = 'budget-groups/{id}'
+GET_ASSIGNED_CATEGORIES_ENTRY_POINT = 'budget-groups/{id}/categories'
 
 CREATE_BUDGET_CATEGORY_ENTRY_POINT = 'budget-categories'
 DELETE_BUDGET_CATEGORY_ENTRY_POINT = 'budget-categories/{id}'

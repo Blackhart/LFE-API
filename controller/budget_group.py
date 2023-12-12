@@ -2,12 +2,14 @@ from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from marshmallow import Schema, fields, validates, ValidationError
 
+from api.controller.budget_category import BudgetCategorySchema
 from api.core.exceptions import IDNotFound
 from api.model.dal.budget_group import list_budget_groups
 from api.model.dal.budget_group import create_budget_group
 from api.model.dal.budget_group import get_budget_group
 from api.model.dal.budget_group import delete_budget_group
 from api.model.dal.budget_group import rename_budget_group
+from api.model.dal.budget_group import get_assigned_categories
 from api.data.constant import USER_ERR_1, USER_ERR_3
 
 
@@ -98,5 +100,23 @@ class BudgetGroupsName(MethodView):
         """
         try:
             return rename_budget_group(id, name)
+        except IDNotFound:
+            abort(404, message=USER_ERR_3)
+
+
+@blp.route("/budget-groups/<id>/categories")
+class BudgetGroupsName(MethodView):
+
+    @blp.response(200, BudgetCategorySchema(many=True))
+    def get(self, id):
+        """ Return all the assigned categories
+
+        -----
+
+        Args:
+            id (str): Budget group uid
+        """
+        try:
+            return get_assigned_categories(id)
         except IDNotFound:
             abort(404, message=USER_ERR_3)
