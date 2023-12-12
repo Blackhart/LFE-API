@@ -1,9 +1,9 @@
 import uuid
 
+from api.data.constant import USER_ERR_3
 from api.core.exceptions import IDNotFound
 from api.model.db import budget_groups
 from api.model.poco.budget_group import BudgetGroup
-from api.data.constant import USER_ERR_3
 
 
 def create_budget_group(name):
