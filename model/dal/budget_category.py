@@ -1,7 +1,6 @@
 import uuid
 
 from api.core.exceptions import IDNotFound
-from api.model.dal.budget_group import is_budget_group_exists
 from api.model.db import budget_categories
 from api.model.poco.budget_category import BudgetCategory
 from api.data.constant import USER_ERR_3

@@ -7,6 +7,7 @@ from api.test.utils.budget_group import list_budget_groups
 from api.test.utils.budget_group import get_budget_group
 from api.test.utils.budget_group import get_assigned_categories
 from api.test.utils.budget_category import create_budget_category
+from api.test.utils.budget_category import get_budget_category
 
 
 def test__create_budget_group__empty_name__return_user_error_1():
@@ -79,7 +80,14 @@ def test__delete_budget_group__created_G1_group__delete_group_G1():
 
 
 def test__delete_budget_group__group_G1_linked_to_category_C1__delete_category_C1():
-    assert False
+    g1 = create_budget_group(name='G1').json()['id']
+    c1 = create_budget_category(name='C1', budget_group_id=g1).json()['id']
+    
+    delete_budget_group(id=g1)
+    
+    result = get_budget_category(id=c1)
+    
+    assert result.status_code == 404
 
 
 def test__delete_budget_group__valid__return_http_200():

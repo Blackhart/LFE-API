@@ -1,10 +1,12 @@
 import uuid
 
+from api.model.dal.budget_category import delete_budget_category
 from api.data.constant import USER_ERR_3
 from api.core.exceptions import IDNotFound
 from api.model.db import budget_groups
 from api.model.db import budget_categories
 from api.model.poco.budget_group import BudgetGroup
+from api.model.poco.budget_category import BudgetCategory
 
 
 def create_budget_group(name):
@@ -46,6 +48,11 @@ def delete_budget_group(id):
         raise IDNotFound(USER_ERR_3)
 
     idx_to_remove = next(iter(idx))
+    
+    categories = get_assigned_categories(budget_groups[idx_to_remove].id)
+    
+    for category in categories:
+        delete_budget_category(category.id)
 
     budget_groups.pop(idx_to_remove)
 
