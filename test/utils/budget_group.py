@@ -1,5 +1,7 @@
 import requests
 
+from api.test.utils.budget import create_budget
+
 from api.test.data.constant import STAGGING_BASE_URL
 from api.test.data.constant import CREATE_BUDGET_GROUP_ENTRY_POINT
 from api.test.data.constant import DELETE_BUDGET_GROUP_ENTRY_POINT
@@ -33,10 +35,15 @@ def get_get_assigned_categories_url(id):
     return STAGGING_BASE_URL + '/' + GET_ASSIGNED_CATEGORIES_ENTRY_POINT.format(id=id)
 
 
-def create_budget_group(name="My Budget Group"):
+def create_budget_group(name="My Budget Group", budget_id=None):
+    if not budget_id:
+        budget_id = create_budget().json()['id']
+        
     url = get_create_budget_group_url()
+    
     payload = {
-        "name": name
+        "name": name,
+        "budget_id": budget_id
     }
 
     return requests.post(url, json=payload)

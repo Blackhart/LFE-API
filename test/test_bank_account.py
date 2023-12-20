@@ -1,5 +1,7 @@
-from api.data.constant import USER_ERR_1, USER_ERR_2, USER_ERR_3
+from api.data.constant import USER_ERR_1, USER_ERR_2, USER_ERR_3, USER_ERR_5
 from api.model.poco.bank_account_type import BankAccountType
+
+from api.test.utils.budget import create_budget
 
 from api.test.utils.bank_account import create_bank_account
 from api.test.utils.bank_account import delete_bank_account
@@ -39,6 +41,22 @@ def test__create_bank_account__unsupported_type__return_http_422():
 
     assert result.status_code == 422
 
+
+def test__create_bank_account__non_existing_budget__return_user_error_5():
+    b = 'non existing'
+    
+    result = create_bank_account(budget_id=b).json()
+    
+    assert result['errors']['json']['budget_id'][0] == USER_ERR_5
+    
+    
+def test__create_bank_account__non_existing_budget__return_http_422():
+    b = 'non existing'
+    
+    result = create_bank_account(budget_id=b)
+    
+    assert result.status_code == 422
+    
 
 def test__create_bank_account__BA1_as_name__create_account_named_BA1():
     name = 'BA1'
@@ -80,6 +98,14 @@ def test__create_bank_account__trading_account__create_a_trading_account():
     assert result['type'] == type
 
 
+def test__create_bank_account__B1_as_budget__create_a_bank_account_linked_to_B1():
+    b1 = create_budget(name='B1').json()['id']
+    
+    result = create_bank_account(budget_id=b1).json()
+
+    assert result['budget_id'] == b1
+
+
 def test__create_bank_account__valid__return_account_schema():
     created = create_bank_account().json()
 
@@ -87,6 +113,7 @@ def test__create_bank_account__valid__return_account_schema():
     assert 'name' in created
     assert 'type' in created
     assert 'balance' in created
+    assert 'budget_id' in created
 
 
 def test__create_bank_account__valid__return_http_201():

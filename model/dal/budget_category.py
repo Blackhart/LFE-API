@@ -1,6 +1,5 @@
-import uuid
-
 from api.core.exceptions import IDNotFound
+from api.core.uuid import generate_time_based_uuid
 from api.model.db import budget_categories
 from api.model.poco.budget_category import BudgetCategory
 from api.data.constant import USER_ERR_3
@@ -17,7 +16,7 @@ def create_budget_category(name, budget_group_id):
         BudgetCategory: The budget category
     """
     category = BudgetCategory(
-        id=uuid.uuid4().hex,
+        id=generate_time_based_uuid(),
         name=name,
         budget_group_id=budget_group_id
     )

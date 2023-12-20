@@ -36,9 +36,12 @@ class BankAccount:
     name: str
     type: str
     balance: float
+    budget_id: str
     
-    def __init__(self, id: str, name: str, type: str, balance: float):
+    def __init__(self, id: str, name: str, type: str, balance: float, budget_id: str):
         self.id = id
         self.name = name
         self.type = type
         self.balance = balance
+        self.budget_id = budget_id
+        

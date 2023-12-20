@@ -11,7 +11,9 @@ class BudgetGroup:
     """
     id: str
     name: str
+    budget_id: str
     
-    def __init__(self, id: str, name: str):
+    def __init__(self, id: str, name: str, budget_id: str):
         self.id = id
         self.name = name
+        self.budget_id = budget_id

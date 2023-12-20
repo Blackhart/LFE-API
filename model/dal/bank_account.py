@@ -1,27 +1,28 @@
-import uuid
-
 from api.core.exceptions import IDNotFound
+from api.core.uuid import generate_time_based_uuid
 from api.model.db import bank_accounts
 from api.model.poco.bank_account import BankAccount
 from api.data.constant import USER_ERR_3
 
 
-def create_bank_account(name, type, balance):
+def create_bank_account(name, type, balance, budget_id):
     """ Create a bank account
 
     Args:
         name (str): Name of the bank account
         type (str): Type of the bank account
         balance (float): Starting balance of the bank account
+        budget_id (str): Budget ID to link to
 
     Returns:
         BankAccount: The created bank account
     """
     account = BankAccount(
-        id=uuid.uuid4().hex,
+        id=generate_time_based_uuid(),
         name=name,
         type=type,
-        balance=balance
+        balance=balance,
+        budget_id=budget_id
     )
 
     bank_accounts.append(account)

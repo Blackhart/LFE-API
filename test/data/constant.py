@@ -9,6 +9,14 @@ STAGGING_BASE_URL = 'http://127.0.0.1:5000'
 # ENTRY POINTS #
 ################
 
+CREATE_BUDGET_ENTRY_POINT = 'budgets'
+DELETE_BUDGET_ENTRY_POINT = 'budgets/{id}'
+RENAME_BUDGET_ENTRY_POINT = 'budgets/{id}/name'
+LIST_BUDGETS_ENTRY_POINT = 'budgets'
+GET_BUDGET_ENTRY_POINT = 'budgets/{id}'
+GET_LINKED_BANK_ACCOUNTS_ENTRY_POINT = 'budgets/{id}/bank-accounts'
+GET_LINKED_BUDGET_GROUPS_ENTRY_POINT = 'budgets/{id}/budget-groups'
+
 CREATE_BANK_ACCOUNT_ENTRY_POINT = 'bank-accounts'
 DELETE_BANK_ACCOUNT_ENTRY_POINT = 'bank-accounts/{id}'
 RENAME_BANK_ACCOUNT_ENTRY_POINT = 'bank-accounts/{id}/name'

@@ -1,26 +1,26 @@
-import uuid
-
 from api.model.dal.budget_category import delete_budget_category
 from api.data.constant import USER_ERR_3
 from api.core.exceptions import IDNotFound
+from api.core.uuid import generate_time_based_uuid
 from api.model.db import budget_groups
 from api.model.db import budget_categories
 from api.model.poco.budget_group import BudgetGroup
-from api.model.poco.budget_category import BudgetCategory
 
 
-def create_budget_group(name):
+def create_budget_group(name, budget_id):
     """ Create a budget group
 
     Args:
         name (str): Name of the budget group
+        budget_id (str): Budget ID to link to
 
     Returns:
         BudgetGroup: The created budget group
     """
     group = BudgetGroup(
-        id=uuid.uuid4().hex,
-        name=name
+        id=generate_time_based_uuid(),
+        name=name,
+        budget_id=budget_id
     )
 
     budget_groups.append(group)
@@ -47,14 +47,18 @@ def delete_budget_group(id):
     if not idx:
         raise IDNotFound(USER_ERR_3)
 
+    _delete_linked_budget_categories(id=id)
+
     idx_to_remove = next(iter(idx))
-    
-    categories = get_assigned_categories(budget_groups[idx_to_remove].id)
-    
-    for category in categories:
-        delete_budget_category(category.id)
 
     budget_groups.pop(idx_to_remove)
+
+
+def _delete_linked_budget_categories(id):
+    categories = get_linked_categories(id)
+
+    for category in categories:
+        delete_budget_category(category.id)
 
 
 def rename_budget_group(id, name):
@@ -145,14 +149,14 @@ def is_budget_group_exists(id):
     return True
 
 
-def get_assigned_categories(group_id):
-    """ Return all categories assigned to a group
+def get_linked_categories(group_id):
+    """ Return all categories linked to a group
 
     Args:
         group_id (str): Budget group ID
 
     Returns:
-        list: All the assigned categories
+        list: All the linked categories
     """
     if not is_budget_group_exists(group_id):
         raise IDNotFound(USER_ERR_3)

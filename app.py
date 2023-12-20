@@ -5,6 +5,7 @@ print(sys.path)
 from flask import Flask
 from flask_smorest import Api
 
+from controller.budget import blp as BudgetBlueprint
 from controller.bank_account import blp as BankAccountBlueprint
 from controller.budget_group import blp as BudgetGroupBlueprint
 from controller.budget_category import blp as BudgetCategoryBlueprint
@@ -22,6 +23,7 @@ app.config["OPENAPI_SWAGGER_UI_URL"] = "https://cdn.jsdelivr.net/npm/swagger-ui-
 
 api = Api(app)
 
+api.register_blueprint(BudgetBlueprint)
 api.register_blueprint(BankAccountBlueprint)
 api.register_blueprint(BudgetGroupBlueprint)
 api.register_blueprint(BudgetCategoryBlueprint)

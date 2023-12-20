@@ -3,13 +3,14 @@ from flask_smorest import Blueprint, abort
 from marshmallow import Schema, fields, validates, ValidationError
 
 from api.core.exceptions import IDNotFound
+from api.model.dal.budget import is_budget_exists
 from api.model.dal.bank_account import create_bank_account
 from api.model.dal.bank_account import delete_bank_account
 from api.model.dal.bank_account import rename_bank_account
 from api.model.dal.bank_account import get_bank_account
 from api.model.dal.bank_account import list_bank_accounts
 from api.data.constant import SUPPORTED_BANK_ACCOUNT_TYPE
-from api.data.constant import USER_ERR_2, USER_ERR_1, USER_ERR_3
+from api.data.constant import USER_ERR_2, USER_ERR_1, USER_ERR_3, USER_ERR_5
 
 
 blp = Blueprint("Bank Accounts",
@@ -24,6 +25,7 @@ class BankAccountSchema(Schema):
     name = fields.Str(required=True)
     type = fields.Str(required=True)
     balance = fields.Float(required=True)
+    budget_id = fields.Str(required=True)
 
     @validates('name')
     def validate_name(self, name):
@@ -34,6 +36,11 @@ class BankAccountSchema(Schema):
     def validate_type(self, type):
         if type not in SUPPORTED_BANK_ACCOUNT_TYPE:
             raise ValidationError(USER_ERR_2)
+
+    @validates('budget_id')
+    def validate_budget_id(self, budget_id):
+        if not is_budget_exists(budget_id):
+            raise ValidationError(USER_ERR_5)
 
 
 @blp.route("/bank-accounts")
@@ -47,7 +54,7 @@ class BankAccounts(MethodView):
 
     @blp.arguments(BankAccountSchema, as_kwargs=True)
     @blp.response(201, BankAccountSchema)
-    def post(self, name, type, balance):
+    def post(self, name, type, balance, budget_id):
         """ Create a bank account
 
         -----
@@ -56,8 +63,9 @@ class BankAccounts(MethodView):
             name (str): Name of the bank account
             type (str): Type of the bank account
             balance (float): Starting balance of the bank account
+            budget_id (str): Budget ID to link to
         """
-        return create_bank_account(name, type, balance)
+        return create_bank_account(name, type, balance, budget_id)
 
 
 @blp.route("/bank-accounts/<id>")

@@ -33,7 +33,10 @@ def get_assign_budget_group_url(id):
     return STAGGING_BASE_URL + '/' + ASSIGN_BUDGET_GROUP_ENTRY_POINT.format(id=id)
 
 
-def create_budget_category(name="My Budget Category", budget_group_id=""):
+def create_budget_category(name="My Budget Category", budget_group_id=None):
+    if not budget_group_id:
+        budget_group_id = create_budget_category().json()['id']
+
     url = get_create_budget_category_url()
     payload = {
         "name": name,

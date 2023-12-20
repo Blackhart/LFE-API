@@ -4,13 +4,14 @@ from marshmallow import Schema, fields, validates, ValidationError
 
 from api.controller.budget_category import BudgetCategorySchema
 from api.core.exceptions import IDNotFound
+from api.model.dal.budget import is_budget_exists
 from api.model.dal.budget_group import list_budget_groups
 from api.model.dal.budget_group import create_budget_group
 from api.model.dal.budget_group import get_budget_group
 from api.model.dal.budget_group import delete_budget_group
 from api.model.dal.budget_group import rename_budget_group
-from api.model.dal.budget_group import get_assigned_categories
-from api.data.constant import USER_ERR_1, USER_ERR_3
+from api.model.dal.budget_group import get_linked_categories
+from api.data.constant import USER_ERR_1, USER_ERR_3, USER_ERR_5
 
 
 blp = Blueprint("Budget Groups",
@@ -23,11 +24,17 @@ class BudgetGroupSchema(Schema):
     """
     id = fields.Str(dump_only=True)
     name = fields.Str(required=True)
+    budget_id = fields.Str(required=True)
 
     @validates('name')
     def validate_name(self, name):
         if not name or not name.strip():
             raise ValidationError(USER_ERR_1)
+
+    @validates('budget_id')
+    def validate_budget_id(self, budget_id):
+        if not is_budget_exists(budget_id):
+            raise ValidationError(USER_ERR_5)
 
 
 @blp.route("/budget-groups")
@@ -41,7 +48,7 @@ class BudgetGroups(MethodView):
 
     @blp.arguments(BudgetGroupSchema, as_kwargs=True)
     @blp.response(201, BudgetGroupSchema)
-    def post(self, name):
+    def post(self, name, budget_id):
         """ Create a budget group
 
         -----
@@ -49,7 +56,7 @@ class BudgetGroups(MethodView):
         Args:
             name (str): Name of the group
         """
-        return create_budget_group(name)
+        return create_budget_group(name, budget_id)
 
 
 @blp.route("/budget-groups/<id>")
@@ -105,7 +112,7 @@ class BudgetGroupsName(MethodView):
 
 
 @blp.route("/budget-groups/<id>/categories")
-class BudgetGroupsName(MethodView):
+class CategoriesByBudgetGroup(MethodView):
 
     @blp.response(200, BudgetCategorySchema(many=True))
     def get(self, id):
@@ -117,6 +124,6 @@ class BudgetGroupsName(MethodView):
             id (str): Budget group uid
         """
         try:
-            return get_assigned_categories(id)
+            return get_linked_categories(id)
         except IDNotFound:
             abort(404, message=USER_ERR_3)
