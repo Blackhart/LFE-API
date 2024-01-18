@@ -1,2 +1,0 @@
-class IDNotFound(ValueError):
-    pass
