@@ -22,6 +22,17 @@ class InBankAccountSerializer(serializers.ModelSerializer):
             self.fields['name'].error_messages['blank'] = USER_ERR_1
 
     def validate_type(self, value):
+        """ Validate bank account type
+
+        Args:
+            value (str): Bank account type to validate
+
+        Raises:
+            serializers.ValidationError: If the bank account type is not supported
+
+        Returns:
+            bool: True if the bank account type is supported, False otherwise
+        """
         if value not in SUPPORTED_BANK_ACCOUNT_TYPE:
             raise serializers.ValidationError(USER_ERR_2.format(
                 Type=value, AvailableType=SUPPORTED_BANK_ACCOUNT_TYPE))

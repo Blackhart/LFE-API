@@ -36,3 +36,5 @@ RENAME_BUDGET_CATEGORY_ENTRY_POINT = 'budget-categories/{id}/name'
 LIST_BUDGET_CATEGORIES_ENTRY_POINT = 'budget-categories'
 GET_BUDGET_CATEGORY_ENTRY_POINT = 'budget-categories/{id}'
 ASSIGN_BUDGET_GROUP_ENTRY_POINT = 'budget-categories/{id}/budget-group-id'
+
+RECORD_TRANSACTION_ENTRY_POINT = 'transactions'

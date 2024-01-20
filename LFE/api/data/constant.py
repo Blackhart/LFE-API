@@ -11,6 +11,12 @@ SUPPORTED_BANK_ACCOUNT_TYPE = [
     BankAccountType.TRADING
 ]
 
+########
+# DATE #
+########
+
+DATE_FORMAT = '%Y-%m-%d'
+
 
 ###############
 # USER ERRORS #
@@ -21,3 +27,5 @@ USER_ERR_2 = 'Bank account type {Type} is not supported. Should be one of {Avail
 USER_ERR_3 = 'ID {id} not found.'
 USER_ERR_4 = 'Budget group ID {id} not found.'
 USER_ERR_5 = 'Budget ID {id} not found.'
+USER_ERR_6 = 'Bank account ID {id} not found.'
+USER_ERR_7 = 'Invalid date format {date}. Date should be of the form AAAA-MM-DD.'
