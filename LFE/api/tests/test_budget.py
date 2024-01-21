@@ -13,13 +13,15 @@ from api.tests.utils.bank_account import get_bank_account
 from api.tests.utils.budget_group import create_budget_group
 from api.tests.utils.budget_group import get_budget_group
 
+
 def test__create_budget__blank_name__return_user_error_1():
     empty_name = ''
-    
+
     result = create_budget(name=empty_name).json()
-    
+
     assert result['name'][0] == USER_ERR_1
-    
+
+
 def test__create_budget__empty_name__return_http_400():
     empty_name = ''
 
@@ -253,7 +255,7 @@ def test__get_budget__valid__return_http_200():
     assert result.status_code == 200
 
 
-def test__get_budget__valid__return_schema():
+def test__get_budget__valid__return_budget_schema():
     g = create_budget().json()
 
     result = get_budget(id=g['id']).json()
@@ -306,6 +308,27 @@ def test__get_linked_bank_accounts__linked_BA1_BA2_not_linked_BA3__return_BA1_BA
     assert ba3 not in idx
 
 
+def test__get_linked_bank_accounts__valid__return_http_200():
+    b = create_budget().json()['id']
+
+    result = get_linked_bank_accounts(id=b)
+
+    assert result.status_code == 200
+
+
+def test__get_linked_bank_accounts__valid__return_bank_account_schema():
+    b = create_budget().json()['id']
+
+    result = get_linked_bank_accounts(id=b).json()
+
+    for ba in result:
+        assert 'id' in ba
+        assert 'name' in ba
+        assert 'type' in ba
+        assert 'balance' in ba
+        assert 'budget_id' in ba
+
+
 def test__get_linked_budget_groups__non_existing_budget__return_user_error_3():
     non_existing = 'non-existing'
 
@@ -348,3 +371,22 @@ def test__get_linked_budget_groups__linked_G1_G2_not_linked_G3__return_G1_G2():
     assert g1 in idx
     assert g2 in idx
     assert g3 not in idx
+
+
+def test__get_linked_budget_groups__valid__return_http_200():
+    b = create_budget().json()['id']
+
+    result = get_linked_budget_groups(id=b)
+
+    assert result.status_code == 200
+
+
+def test__get_linked_budget_groups__valid__return_budget_group_schema():
+    b = create_budget().json()['id']
+
+    result = get_linked_budget_groups(id=b).json()
+
+    for g in result:
+        assert 'id' in g
+        assert 'name' in g
+        assert 'budget_id' in g

@@ -319,3 +319,22 @@ def test__get_assigned_categories__created_C1_C2_C3_assigned_C1_C2__return_C1_C2
     assert c1 in idx
     assert c2 in idx
     assert c3 not in idx
+
+
+def test__get_assigned_categories__valid__return_http_200():
+    g = create_budget_group().json()
+
+    result = get_assigned_categories(id=g['id'])
+
+    assert result.status_code == 200
+
+
+def test__get_assigned_categories__valid__return_category_schema():
+    g = create_budget_group().json()
+
+    result = get_assigned_categories(id=g['id']).json()
+
+    for category in result:
+        assert 'id' in category
+        assert 'name' in category
+        assert 'budget_group_id' in category

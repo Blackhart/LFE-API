@@ -10,9 +10,11 @@ from api.models.dal.bank_account import delete_bank_account
 from api.models.dal.bank_account import rename_bank_account
 from api.models.dal.bank_account import get_bank_account
 from api.models.dal.bank_account import is_bank_account_exists
+from api.models.dal.bank_account import list_transactions_by_bank_account_id
 from api.serializers.bank_account import InBankAccountSerializer
 from api.serializers.bank_account import InBankAccountNameUpdateSerializer
 from api.serializers.bank_account import OutBankAccountSerializer
+from api.serializers.transaction import OutTransactionSerializer
 
 
 @extend_schema(
@@ -53,9 +55,9 @@ class BankAccountList(APIView):
         serializer.is_valid(raise_exception=True)
 
         bank_account = create_bank_account(
-            serializer.validated_data['name'], 
-            serializer.validated_data['type'], 
-            serializer.validated_data['balance'], 
+            serializer.validated_data['name'],
+            serializer.validated_data['type'],
+            serializer.validated_data['balance'],
             serializer.validated_data['budget_id'])
 
         return Response(OutBankAccountSerializer(bank_account).data, status=status.HTTP_201_CREATED)
@@ -135,3 +137,29 @@ class BankAccountNameUpdate(APIView):
             id, serializer.validated_data['name'])
 
         return Response(OutBankAccountSerializer(bank_account).data, status=status.HTTP_200_OK)
+
+
+@extend_schema(
+    summary="Operations on bank accounts"
+)
+class TransactionsByBankAccount(APIView):
+    """
+    List all transactions by bank account.
+    """
+
+    @extend_schema(
+        responses={
+            status.HTTP_200_OK: OutTransactionSerializer
+        },
+        summary="Get all transactions by bank account"
+    )
+    def get(self, request, id):
+        """ Get all transactions by bank account
+        """
+        if not is_bank_account_exists(id):
+            raise IDNotFound(id=id)
+        
+        transactions = list_transactions_by_bank_account_id(id)
+
+        serializer = OutTransactionSerializer(transactions, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

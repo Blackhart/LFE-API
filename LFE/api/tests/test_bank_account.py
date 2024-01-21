@@ -9,6 +9,8 @@ from api.tests.utils.bank_account import delete_bank_account
 from api.tests.utils.bank_account import rename_bank_account
 from api.tests.utils.bank_account import list_bank_accounts
 from api.tests.utils.bank_account import get_bank_account
+from api.tests.utils.bank_account import get_transactions_by_bank_account
+from api.tests.utils.transaction import record_transaction
 
 
 def test__create_bank_account__empty_name__return_user_error_1():
@@ -32,7 +34,8 @@ def test__create_bank_account__unsupported_type__return_user_error_2():
 
     result = create_bank_account(type=unsupported_type).json()
 
-    assert result['type'][0] == USER_ERR_2.format(Type=unsupported_type, AvailableType=SUPPORTED_BANK_ACCOUNT_TYPE)
+    assert result['type'][0] == USER_ERR_2.format(
+        Type=unsupported_type, AvailableType=SUPPORTED_BANK_ACCOUNT_TYPE)
 
 
 def test__create_bank_account__unsupported_type__return_http_400():
@@ -45,19 +48,19 @@ def test__create_bank_account__unsupported_type__return_http_400():
 
 def test__create_bank_account__non_existing_budget__return_user_error_5():
     b = 'non-existing'
-    
+
     result = create_bank_account(budget_id=b).json()
-    
+
     assert result['budget_id'][0] == USER_ERR_5.format(id=b)
-    
-    
+
+
 def test__create_bank_account__non_existing_budget__return_http_400():
     b = 'non-existing'
-    
+
     result = create_bank_account(budget_id=b)
-    
+
     assert result.status_code == 400
-    
+
 
 def test__create_bank_account__BA1_as_name__create_account_named_BA1():
     name = 'BA1'
@@ -101,7 +104,7 @@ def test__create_bank_account__trading_account__create_a_trading_account():
 
 def test__create_bank_account__B1_as_budget__create_a_bank_account_linked_to_B1():
     b1 = create_budget(name='B1').json()['id']
-    
+
     result = create_bank_account(budget_id=b1).json()
 
     assert result['budget_id'] == b1
@@ -318,3 +321,68 @@ def test__get_bank_account__non_existing_account__return_http_404():
     result = get_bank_account(id=invalid_id)
 
     assert result.status_code == 404
+
+
+def test__get_linked_transactions__non_existing_account__return_user_error_3():
+    invalid_id = 'invalid-id'
+
+    result = get_transactions_by_bank_account(id=invalid_id).json()
+
+    assert result['detail'] == USER_ERR_3.format(id=invalid_id)
+
+
+def test__get_linked_transactions__non_existing_account__return_http_404():
+    invalid_id = 'invalid-id'
+
+    result = get_transactions_by_bank_account(id=invalid_id)
+
+    assert result.status_code == 404
+
+
+def test__get_linked_transactions__linked_T1__return_T1():
+    ba1 = create_bank_account().json()['id']
+    t1 = record_transaction(bank_account_id=ba1).json()['id']
+
+    result = get_transactions_by_bank_account(id=ba1).json()
+
+    idx = [transaction['id'] for transaction in result]
+
+    assert t1 in idx
+
+
+def test__get_linked_budget_groups__linked_T1_T2_not_linked_T3__return_T1_T2():
+    ba = create_bank_account().json()['id']
+
+    t1 = record_transaction(bank_account_id=ba).json()['id']
+    t2 = record_transaction(bank_account_id=ba).json()['id']
+    t3 = record_transaction().json()['id']
+
+    result = get_transactions_by_bank_account(id=ba).json()
+
+    idx = [t['id'] for t in result]
+
+    assert t1 in idx
+    assert t2 in idx
+    assert t3 not in idx
+
+
+def test__get_linked_transactions__valid__return_http_200():
+    ba1 = create_bank_account().json()['id']
+
+    result = get_transactions_by_bank_account(id=ba1)
+
+    assert result.status_code == 200
+
+
+def test__get_linked_transactions__valid__return_transaction_schema():
+    ba1 = create_bank_account().json()['id']
+    t1 = record_transaction(bank_account_id=ba1).json()['id']
+
+    result = get_transactions_by_bank_account(id=ba1).json()
+
+    for transaction in result:
+        assert 'id' in transaction
+        assert 'date' in transaction
+        assert 'label' in transaction
+        assert 'amount' in transaction
+        assert 'bank_account_id' in transaction

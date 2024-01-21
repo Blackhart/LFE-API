@@ -8,6 +8,7 @@ from api.views.budget import BudgetGroupsByBudget
 from api.views.bank_account import BankAccountList
 from api.views.bank_account import BankAccountUpdate
 from api.views.bank_account import BankAccountNameUpdate
+from api.views.bank_account import TransactionsByBankAccount
 from api.views.budget_group import BudgetGroupList
 from api.views.budget_group import BudgetGroupUpdate
 from api.views.budget_group import BudgetGroupNameUpdate
@@ -28,6 +29,7 @@ urlpatterns = [
     path('bank-accounts/', BankAccountList.as_view()),
     path('bank-accounts/<str:id>', BankAccountUpdate.as_view()),
     path('bank-accounts/<str:id>/name', BankAccountNameUpdate.as_view()),
+    path('bank-accounts/<str:id>/transactions', TransactionsByBankAccount.as_view()),
     path('budget-groups/', BudgetGroupList.as_view()),
     path('budget-groups/<str:id>', BudgetGroupUpdate.as_view()),
     path('budget-groups/<str:id>/name', BudgetGroupNameUpdate.as_view()),

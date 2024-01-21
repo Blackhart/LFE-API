@@ -26,7 +26,7 @@ def delete_bank_account(id):
         id (str): ID of the bank account to delete
     """
     bank_account = get_bank_account(id)
-    
+
     bank_account.delete()
 
 
@@ -76,3 +76,17 @@ def is_bank_account_exists(id):
         bool: True if the bank account exists; False otherwise
     """
     return BankAccount.objects.filter(id=id).exists()
+
+
+def list_transactions_by_bank_account_id(id):
+    """ Return the list of all transactions of a bank account
+
+    Args:
+        id (str): ID of the bank account
+
+    Returns:
+        list: List of transactions of the bank account
+    """
+    bank_account = get_bank_account(id)
+
+    return bank_account.transaction_set.all()

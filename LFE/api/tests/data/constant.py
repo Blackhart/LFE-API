@@ -22,6 +22,7 @@ DELETE_BANK_ACCOUNT_ENTRY_POINT = 'bank-accounts/{id}'
 RENAME_BANK_ACCOUNT_ENTRY_POINT = 'bank-accounts/{id}/name'
 LIST_BANK_ACCOUNTS_ENTRY_POINT = 'bank-accounts'
 GET_BANK_ACCOUNT_ENTRY_POINT = 'bank-accounts/{id}'
+GET_TRANSACTIONS_BY_BANK_ACCOUNT_ENTRY_POINT = 'bank-accounts/{id}/transactions'
 
 CREATE_BUDGET_GROUP_ENTRY_POINT = 'budget-groups'
 DELETE_BUDGET_GROUP_ENTRY_POINT = 'budget-groups/{id}'
