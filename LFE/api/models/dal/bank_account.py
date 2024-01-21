@@ -89,4 +89,4 @@ def list_transactions_by_bank_account_id(id):
     """
     bank_account = get_bank_account(id)
 
-    return bank_account.transaction_set.all()
+    return bank_account.transaction_set.all().order_by('date')

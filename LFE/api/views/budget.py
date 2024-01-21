@@ -12,11 +12,12 @@ from api.models.dal.budget import get_budget
 from api.models.dal.budget import is_budget_exists
 from api.models.dal.budget import list_bank_accounts_by_budget
 from api.models.dal.budget import list_budget_groups_by_budget
+from api.models.dal.budget import list_transactions_by_budget
 from api.serializers.budget import InBudgetSerializer
 from api.serializers.budget import OutBudgetSerializer
 from api.serializers.bank_account import OutBankAccountSerializer
 from api.serializers.budget_group import OutBudgetGroupSerializer
-
+from api.serializers.transaction import OutTransactionsByBudgetSerializer
 
 @extend_schema(
     summary="Operations on budgets"
@@ -145,7 +146,8 @@ class BankAccountsByBudget(APIView):
 
     @extend_schema(
         responses={
-            status.HTTP_200_OK: OutBankAccountSerializer
+            status.HTTP_200_OK: OutBankAccountSerializer,
+            status.HTTP_404_NOT_FOUND: None
         },
         summary="Get all bank accounts linked to a budget"
     )
@@ -171,7 +173,8 @@ class BudgetGroupsByBudget(APIView):
 
     @extend_schema(
         responses={
-            status.HTTP_200_OK: OutBudgetGroupSerializer
+            status.HTTP_200_OK: OutBudgetGroupSerializer,
+            status.HTTP_404_NOT_FOUND: None
         },
         summary="Get all budget groups linked to a budget"
     )
@@ -184,4 +187,31 @@ class BudgetGroupsByBudget(APIView):
         budget_groups = list_budget_groups_by_budget(id)
 
         serializer = OutBudgetGroupSerializer(budget_groups, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@extend_schema(
+    summary="Operations on budgets"
+)
+class TransactionsByBudget(APIView):
+    """
+    List all transactions linked to a budget.
+    """
+
+    @extend_schema(
+        responses={
+            status.HTTP_200_OK: OutTransactionsByBudgetSerializer,
+            status.HTTP_404_NOT_FOUND: None
+        },
+        summary="Get all transactions linked to a budget"
+    )
+    def get(self, request, id):
+        """ Get all transactions linked to a budget
+        """
+        if not is_budget_exists(id):
+            raise IDNotFound(id=id)
+
+        transactions = list_transactions_by_budget(id)
+
+        serializer = OutTransactionsByBudgetSerializer(transactions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

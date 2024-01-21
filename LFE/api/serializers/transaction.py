@@ -28,3 +28,15 @@ class OutTransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
         fields = ['id', 'date', 'label', 'amount', 'bank_account_id']
+
+
+class OutTransactionsByBudgetSerializer(serializers.ModelSerializer):
+    budget_id = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Transaction
+        fields = ['id', 'date', 'label', 'amount',
+                  'bank_account_id', 'budget_id']
+
+    def get_budget_id(self, obj):
+        return obj.bank_account_id.budget_id.id

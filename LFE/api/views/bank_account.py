@@ -149,7 +149,8 @@ class TransactionsByBankAccount(APIView):
 
     @extend_schema(
         responses={
-            status.HTTP_200_OK: OutTransactionSerializer
+            status.HTTP_200_OK: OutTransactionSerializer,
+            status.HTTP_404_NOT_FOUND: None
         },
         summary="Get all transactions by bank account"
     )

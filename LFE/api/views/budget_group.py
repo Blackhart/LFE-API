@@ -147,7 +147,8 @@ class BudgetCategoriesByBudgetGroup(APIView):
 
     @extend_schema(
         responses={
-            status.HTTP_200_OK: OutBudgetCategorySerializer
+            status.HTTP_200_OK: OutBudgetCategorySerializer,
+            status.HTTP_404_NOT_FOUND: None
         },
         summary="Get all budget categories linked to a budget group"
     )

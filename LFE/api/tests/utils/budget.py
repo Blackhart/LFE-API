@@ -6,8 +6,9 @@ from api.tests.data.constant import DELETE_BUDGET_ENTRY_POINT
 from api.tests.data.constant import RENAME_BUDGET_ENTRY_POINT
 from api.tests.data.constant import LIST_BUDGETS_ENTRY_POINT
 from api.tests.data.constant import GET_BUDGET_ENTRY_POINT
-from api.tests.data.constant import GET_LINKED_BANK_ACCOUNTS_ENTRY_POINT
-from api.tests.data.constant import GET_LINKED_BUDGET_GROUPS_ENTRY_POINT
+from api.tests.data.constant import GET_BANK_ACCOUNTS_BY_BUDGET_ENTRY_POINT
+from api.tests.data.constant import GET_BUDGET_GROUPS_BY_BUDGET_ENTRY_POINT
+from api.tests.data.constant import GET_TRANSACTIONS_BY_BUDGET_ENTRY_POINT
 
 
 def get_create_budget_url():
@@ -31,11 +32,15 @@ def get_get_budget_url(id):
 
 
 def get_get_linked_bank_accounts_url(id):
-    return STAGGING_BASE_URL + '/' + GET_LINKED_BANK_ACCOUNTS_ENTRY_POINT.format(id=id)
+    return STAGGING_BASE_URL + '/' + GET_BANK_ACCOUNTS_BY_BUDGET_ENTRY_POINT.format(id=id)
 
 
 def get_get_linked_budget_groups_url(id):
-    return STAGGING_BASE_URL + '/' + GET_LINKED_BUDGET_GROUPS_ENTRY_POINT.format(id=id)
+    return STAGGING_BASE_URL + '/' + GET_BUDGET_GROUPS_BY_BUDGET_ENTRY_POINT.format(id=id)
+
+
+def get_get_linked_transactions_url(id):
+    return STAGGING_BASE_URL + '/' + GET_TRANSACTIONS_BY_BUDGET_ENTRY_POINT.format(id=id)
 
 
 def create_budget(name="My Budget"):
@@ -82,5 +87,11 @@ def get_linked_bank_accounts(id):
 
 def get_linked_budget_groups(id):
     url = get_get_linked_budget_groups_url(id)
+
+    return requests.get(url)
+
+
+def get_linked_transactions(id):
+    url = get_get_linked_transactions_url(id)
 
     return requests.get(url)
