@@ -1,8 +1,6 @@
 from rest_framework import serializers
 
 from api.data.constant import USER_ERR_6, USER_ERR_7
-from api.data.constant import DATE_FORMAT
-from api.core.date import is_valid_datetime_format
 from api.models.poco.transaction import Transaction
 
 

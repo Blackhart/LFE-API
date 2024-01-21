@@ -3,6 +3,7 @@ from api.data.constant import USER_ERR_3, USER_ERR_6, USER_ERR_7
 from api.tests.utils.transaction import record_transaction
 from api.tests.utils.transaction import delete_transaction
 from api.tests.utils.transaction import get_transaction
+from api.tests.utils.transaction import update_transaction
 from api.tests.utils.bank_account import create_bank_account
 
 
@@ -157,3 +158,121 @@ def test__get_transaction__valid__return_transaction_schema():
     assert 'label' in result
     assert 'amount' in result
     assert 'bank_account_id' in result
+
+
+def test__update_transaction__non_existing_transaction__return_user_error_3():
+    non_existing = 'non-existing'
+
+    result = update_transaction(id=non_existing).json()
+
+    assert result['detail'] == USER_ERR_3.format(id=non_existing)
+
+
+def test__update_transaction__non_existing_transaction__return_http_404():
+    non_existing = 'non-existing'
+
+    result = update_transaction(id=non_existing)
+
+    assert result.status_code == 404
+
+
+def test__update_transaction__invalid_date_format__return_user_error_7():
+    created = record_transaction().json()
+
+    invalid_date_format = '01-01-2021'
+
+    result = update_transaction(
+        id=created['id'], date=invalid_date_format).json()
+
+    assert result['date'][0] == USER_ERR_7.format(date=invalid_date_format)
+
+
+def test__update_transaction__invalid_date_format__return_http_400():
+    created = record_transaction().json()
+
+    invalid_date_format = '01-01-2021'
+
+    result = update_transaction(id=created['id'], date=invalid_date_format)
+
+    assert result.status_code == 400
+
+
+def test__update_transaction__non_existing_bank_account_id__return_user_error_6():
+    created = record_transaction().json()
+
+    non_existing_bank_account_id = "non-existing"
+
+    result = update_transaction(
+        id=created['id'],
+        bank_account_id=non_existing_bank_account_id).json()
+
+    assert result['bank_account_id'][0] == USER_ERR_6.format(
+        id=non_existing_bank_account_id)
+
+
+def test__update_transaction__non_existing_bank_account_id__return_http_400():
+    created = record_transaction().json()
+
+    non_existing_bank_account_id = "non-existing"
+
+    result = update_transaction(
+        id=created['id'],
+        bank_account_id=non_existing_bank_account_id)
+
+    assert result.status_code == 400
+
+
+def test__update_transaction__new_date__update_transaction_with_new_date():
+    created = record_transaction().json()
+
+    new_date = '1990-01-01'
+
+    update_transaction(id=created['id'], date=new_date)
+
+    transaction = get_transaction(id=created['id']).json()
+
+    assert transaction['date'] == new_date
+
+
+def test__update_transaction__new_label__update_transaction_with_new_label():
+    created = record_transaction().json()
+
+    new_label = 'New Label'
+
+    update_transaction(id=created['id'], label=new_label)
+
+    transaction = get_transaction(id=created['id']).json()
+
+    assert transaction['label'] == new_label
+
+
+def test__update_transaction__new_amount__update_transaction_with_new_amount():
+    created = record_transaction().json()
+
+    new_amount = 100
+
+    update_transaction(id=created['id'], amount=new_amount)
+
+    transaction = get_transaction(id=created['id']).json()
+
+    assert transaction['amount'] == new_amount
+
+
+def test__update_transaction__new_bank_account_id__update_transaction_with_new_bank_account_id():
+    created = record_transaction().json()
+
+    new_bank_account_id = create_bank_account().json()['id']
+
+    update_transaction(id=created['id'], bank_account_id=new_bank_account_id)
+
+    transaction = get_transaction(id=created['id']).json()
+
+    assert transaction['bank_account_id'] == new_bank_account_id
+
+
+def test__update_transaction__valid__return_http_204():
+    created = record_transaction().json()
+
+    result = update_transaction(id=created['id'])
+
+    assert result.status_code == 204
