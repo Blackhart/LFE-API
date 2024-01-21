@@ -1,6 +1,7 @@
-from api.data.constant import USER_ERR_6, USER_ERR_7
+from api.data.constant import USER_ERR_3, USER_ERR_6, USER_ERR_7
 
 from api.tests.utils.transaction import record_transaction
+from api.tests.utils.transaction import get_transaction
 from api.tests.utils.bank_account import create_bank_account
 
 
@@ -71,6 +72,50 @@ def test__record_transaction__valid__return_http_201():
 
 def test__record_transaction__valid__return_transaction_schema():
     result = record_transaction().json()
+
+    assert 'id' in result
+    assert 'date' in result
+    assert 'label' in result
+    assert 'amount' in result
+    assert 'bank_account_id' in result
+
+
+def test__get_transaction__non_existing_transaction__return_user_error_3():
+    non_existing = 'non-existing'
+
+    result = get_transaction(id=non_existing).json()
+
+    assert result['detail'] == USER_ERR_3.format(id=non_existing)
+
+
+def test__get_transaction__non_existing_transaction__return_http_404():
+    non_existing = 'non-existing'
+
+    result = get_transaction(id=non_existing)
+
+    assert result.status_code == 404
+
+
+def test__get_transaction__created_T1__get_T1():
+    created = record_transaction().json()
+
+    result = get_transaction(id=created['id']).json()
+
+    assert result['id'] == created['id']
+    assert result['date'] == created['date']
+    assert result['label'] == created['label']
+    assert result['amount'] == created['amount']
+    assert result['bank_account_id'] == created['bank_account_id']
+
+
+def test__get_transaction__valid__return_http_200():
+    result = get_transaction(id=record_transaction().json()['id'])
+
+    assert result.status_code == 200
+
+
+def test__get_transaction__valid__return_transaction_schema():
+    result = get_transaction(id=record_transaction().json()['id']).json()
 
     assert 'id' in result
     assert 'date' in result
