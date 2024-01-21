@@ -5,6 +5,7 @@ from drf_spectacular.utils import extend_schema
 
 from api.core.exceptions import IDNotFound
 from api.models.dal.transaction import record_transaction
+from api.models.dal.transaction import delete_transaction
 from api.models.dal.transaction import get_transaction
 from api.models.dal.transaction import is_transaction_exists
 from api.serializers.transaction import InTransactionSerializer
@@ -35,13 +36,14 @@ class TransactionList(APIView):
         serializer.is_valid(raise_exception=True)
 
         transaction = record_transaction(
-            serializer.validated_data['date'], 
-            serializer.validated_data['label'], 
-            serializer.validated_data['amount'], 
+            serializer.validated_data['date'],
+            serializer.validated_data['label'],
+            serializer.validated_data['amount'],
             serializer.validated_data['bank_account_id']
         )
 
         return Response(OutTransactionSerializer(transaction).data, status=status.HTTP_201_CREATED)
+
 
 @extend_schema(
     summary="Operations on transactions"
@@ -50,6 +52,23 @@ class TransactionUpdate(APIView):
     """
     Update a transaction.
     """
+
+    @extend_schema(
+        responses={
+            status.HTTP_204_NO_CONTENT: None,
+            status.HTTP_404_NOT_FOUND: None
+        },
+        summary="Delete a transaction"
+    )
+    def delete(self, request, id):
+        """ Delete a transaction
+        """
+        if not is_transaction_exists(id):
+            raise IDNotFound(id=id)
+
+        delete_transaction(id)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @extend_schema(
         responses={

@@ -38,4 +38,5 @@ GET_BUDGET_CATEGORY_ENTRY_POINT = 'budget-categories/{id}'
 ASSIGN_BUDGET_GROUP_ENTRY_POINT = 'budget-categories/{id}/budget-group-id'
 
 RECORD_TRANSACTION_ENTRY_POINT = 'transactions'
+DELETE_TRANSACTION_ENTRY_POINT = 'transactions/{id}'
 GET_TRANSACTION_ENTRY_POINT = 'transactions/{id}'

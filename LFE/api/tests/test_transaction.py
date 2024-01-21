@@ -1,6 +1,7 @@
 from api.data.constant import USER_ERR_3, USER_ERR_6, USER_ERR_7
 
 from api.tests.utils.transaction import record_transaction
+from api.tests.utils.transaction import delete_transaction
 from api.tests.utils.transaction import get_transaction
 from api.tests.utils.bank_account import create_bank_account
 
@@ -78,6 +79,40 @@ def test__record_transaction__valid__return_transaction_schema():
     assert 'label' in result
     assert 'amount' in result
     assert 'bank_account_id' in result
+
+
+def test__delete_transaction__non_existing_transaction__return_user_error_3():
+    non_existing = 'non-existing'
+
+    result = delete_transaction(id=non_existing).json()
+
+    assert result['detail'] == USER_ERR_3.format(id=non_existing)
+
+
+def test__delete_transaction__non_existing_transaction__return_http_404():
+    non_existing = 'non-existing'
+
+    result = delete_transaction(id=non_existing)
+
+    assert result.status_code == 404
+
+
+def test__delete_transaction__created_T1__delete_T1():
+    created = record_transaction().json()
+
+    delete_transaction(id=created['id'])
+
+    result = get_transaction(id=created['id'])
+
+    assert result.status_code == 404
+
+
+def test__delete_transaction__valid__return_http_204():
+    created = record_transaction().json()
+
+    result = delete_transaction(id=created['id'])
+
+    assert result.status_code == 204
 
 
 def test__get_transaction__non_existing_transaction__return_user_error_3():

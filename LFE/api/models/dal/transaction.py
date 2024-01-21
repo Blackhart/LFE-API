@@ -25,6 +25,15 @@ def record_transaction(date, label, amount, bank_account_id):
     )
 
 
+def delete_transaction(id):
+    """ Delete a transaction
+
+    Args:
+        id (str): ID of the transaction
+    """
+    Transaction.objects.get(id=id).delete()
+
+
 def get_transaction(id):
     """ Get a transaction by ID
 
