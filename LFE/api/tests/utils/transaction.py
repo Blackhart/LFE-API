@@ -54,11 +54,7 @@ def get_transaction(id):
     return requests.get(url)
 
 
-def update_transaction(id, date=get_current_date(), label="My Updated Transaction", amount="1", bank_account_id=None):
-    if not bank_account_id:
-        bank_account_id = create_bank_account().json()['id']
-        record_transaction(bank_account_id=bank_account_id)
-
+def update_transaction(id, date, label, amount, bank_account_id):
     url = get_update_transaction_url(id)
 
     payload = {

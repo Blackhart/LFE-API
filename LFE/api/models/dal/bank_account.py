@@ -90,3 +90,17 @@ def list_transactions_by_bank_account_id(id):
     bank_account = get_bank_account(id)
 
     return bank_account.transaction_set.all().order_by('date')
+
+
+def update_balance(id, amount):
+    """ Update the balance of a bank account
+
+    Args:
+        id (str): ID of the bank account
+        amount (float): Amount to add to the balance
+    """
+    bank_account = get_bank_account(id)
+
+    bank_account.balance += amount
+
+    bank_account.save()
