@@ -7,7 +7,7 @@ class BankAccount(models.Model):
     name = models.CharField(max_length=100)
     type = models.CharField(max_length=10)
     balance = models.FloatField(default=0)
-    budget_id = models.ForeignKey(Budget, on_delete=models.CASCADE)
+    budget = models.ForeignKey(Budget, on_delete=models.CASCADE)
     
     def __str__(self):
-        return f'BankAccount(id={self.id}, name={self.name}, type={self.type}, balance={self.balance}, budget_id={self.budget_id})'
+        return f'BankAccount(id={self.id}, name={self.name}, type={self.type}, balance={self.balance}, budget={self.budget})'

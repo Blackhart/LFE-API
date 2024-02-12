@@ -26,9 +26,9 @@ def get_update_transaction_url(id):
     return STAGGING_BASE_URL + '/' + UPDATE_TRANSACTION_ENTRY_POINT.format(id=id)
 
 
-def record_transaction(date=get_current_date(), label="My Transaction", amount="1", bank_account_id=None):
-    if not bank_account_id:
-        bank_account_id = create_bank_account().json()['id']
+def record_transaction(date=get_current_date(), label="My Transaction", amount="1", bank_account=None):
+    if not bank_account:
+        bank_account = create_bank_account().json()['id']
 
     url = get_record_transaction_url()
 
@@ -36,7 +36,7 @@ def record_transaction(date=get_current_date(), label="My Transaction", amount="
         "date": date,
         "label": label,
         "amount": float(amount),
-        "bank_account_id": bank_account_id
+        "bank_account": bank_account
     }
 
     return requests.post(url, json=payload)
@@ -54,14 +54,14 @@ def get_transaction(id):
     return requests.get(url)
 
 
-def update_transaction(id, date, label, amount, bank_account_id):
+def update_transaction(id, date, label, amount, bank_account):
     url = get_update_transaction_url(id)
 
     payload = {
         "date": date,
         "label": label,
         "amount": float(amount),
-        "bank_account_id": bank_account_id
+        "bank_account": bank_account
     }
 
     return requests.put(url, json=payload)

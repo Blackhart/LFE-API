@@ -10,15 +10,15 @@ from api.models.poco.bank_account import BankAccount
 class InBankAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = BankAccount
-        fields = ['name', 'type', 'balance', 'budget_id']
+        fields = ['name', 'type', 'balance', 'budget']
 
     def __init__(self, *args, **kwargs):
         super(InBankAccountSerializer, self).__init__(*args, **kwargs)
         if 'data' in kwargs:
-            self.fields['budget_id'].error_messages['does_not_exist'] = USER_ERR_5.format(id=kwargs['data']['budget_id'])
+            self.fields['budget'].error_messages['does_not_exist'] = USER_ERR_5.format(id=kwargs['data']['budget'])
             self.fields['name'].error_messages['blank'] = USER_ERR_1
         else:
-            self.fields['budget_id'].error_messages['does_not_exist'] = USER_ERR_5.format(id='')
+            self.fields['budget'].error_messages['does_not_exist'] = USER_ERR_5.format(id='')
             self.fields['name'].error_messages['blank'] = USER_ERR_1
 
     def validate_type(self, value):
@@ -54,4 +54,4 @@ class InBankAccountNameUpdateSerializer(serializers.ModelSerializer):
 class OutBankAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = BankAccount
-        fields = ['id', 'name', 'type', 'balance', 'budget_id']
+        fields = ['id', 'name', 'type', 'balance', 'budget']

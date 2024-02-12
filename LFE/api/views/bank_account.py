@@ -10,7 +10,7 @@ from api.models.dal.bank_account import delete_bank_account
 from api.models.dal.bank_account import rename_bank_account
 from api.models.dal.bank_account import get_bank_account
 from api.models.dal.bank_account import is_bank_account_exists
-from api.models.dal.bank_account import list_transactions_by_bank_account_id
+from api.models.dal.bank_account import list_transactions_by_bank_account
 from api.serializers.bank_account import InBankAccountSerializer
 from api.serializers.bank_account import InBankAccountNameUpdateSerializer
 from api.serializers.bank_account import OutBankAccountSerializer
@@ -58,7 +58,7 @@ class BankAccountList(APIView):
             serializer.validated_data['name'],
             serializer.validated_data['type'],
             serializer.validated_data['balance'],
-            serializer.validated_data['budget_id'])
+            serializer.validated_data['budget'])
 
         return Response(OutBankAccountSerializer(bank_account).data, status=status.HTTP_201_CREATED)
 
@@ -160,7 +160,7 @@ class TransactionsByBankAccount(APIView):
         if not is_bank_account_exists(id):
             raise IDNotFound(id=id)
         
-        transactions = list_transactions_by_bank_account_id(id)
+        transactions = list_transactions_by_bank_account(id)
 
         serializer = OutTransactionSerializer(transactions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

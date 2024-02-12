@@ -20,6 +20,7 @@ from api.views.budget_category import BudgetCategoryNameUpdate
 from api.views.budget_category import BudgetCategoryGroupIdUpdate
 from api.views.transaction import TransactionList
 from api.views.transaction import TransactionUpdate
+from api.views.report import NetWorthReport
 
 urlpatterns = [
     path('budgets/', BudgetList.as_view()),
@@ -42,4 +43,5 @@ urlpatterns = [
     path('budget-categories/<str:id>/budget-group-id', BudgetCategoryGroupIdUpdate.as_view()),
     path('transactions/', TransactionList.as_view()),
     path('transactions/<str:id>', TransactionUpdate.as_view()),
+    path('reports/net-worth', NetWorthReport.as_view()),
 ]

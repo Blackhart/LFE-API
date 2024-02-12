@@ -2,19 +2,19 @@ from api.core.uuid import generate_time_based_uuid
 from api.models.poco.budget_category import BudgetCategory
 
 
-def create_budget_category(name, budget_group_id):
+def create_budget_category(name, budget_group):
     """ Create a budget category
 
     Args:
         name (str): Name of the budget category
-        budget_group_id (str): ID of the budget group to link to
+        budget_group (str): ID of the budget group to link to
 
     Returns:
         BudgetCategory: The budget category
     """
     uid = generate_time_based_uuid()
 
-    return BudgetCategory.objects.create(id=uid, name=name, budget_group_id=budget_group_id)
+    return BudgetCategory.objects.create(id=uid, name=name, budget_group=budget_group)
 
 
 def delete_budget_category(id):
@@ -88,6 +88,6 @@ def assign_budget_group(id, group_id):
     Returns:
         BudgetCategory: The budget category
     """
-    BudgetCategory.objects.filter(id=id).update(budget_group_id=group_id)
+    BudgetCategory.objects.filter(id=id).update(budget_group=group_id)
 
     return BudgetCategory.objects.get(id=id)

@@ -16,14 +16,14 @@ def test__record_transaction__invalid_date_format__return_user_error_7():
     assert result['date'][0] == USER_ERR_7.format(date=invalid_date_format)
 
 
-def test__record_transaction__non_existing_bank_account_id__return_user_error_6():
-    non_existing_bank_account_id = "non-existing"
+def test__record_transaction__non_existing_bank_account__return_user_error_6():
+    non_existing_bank_account = "non-existing"
 
     result = record_transaction(
-        bank_account_id=non_existing_bank_account_id).json()
+        bank_account=non_existing_bank_account).json()
 
-    assert result['bank_account_id'][0] == USER_ERR_6.format(
-        id=non_existing_bank_account_id)
+    assert result['bank_account'][0] == USER_ERR_6.format(
+        id=non_existing_bank_account)
 
 
 def test__record_transaction__2020_01_01_as_date__record_transaction_with_date_2020_01_01():
@@ -58,31 +58,31 @@ def test__record_transaction__minus_100_as_amount__record_transaction_with_amoun
     assert result['amount'] == float(amount)
 
 
-def test__record_transaction__BA1_as_bank_account_id__record_transaction_with_bank_account_id_BA1():
+def test__record_transaction__BA1_as_bank_account__record_transaction_with_bank_account_BA1():
     bank_account_name = 'BA1'
 
-    bank_account_id = create_bank_account(name=bank_account_name).json()['id']
-    result = record_transaction(bank_account_id=bank_account_id).json()
+    bank_account = create_bank_account(name=bank_account_name).json()['id']
+    result = record_transaction(bank_account=bank_account).json()
 
-    assert result['bank_account_id'] == bank_account_id
+    assert result['bank_account'] == bank_account
 
 
 def test__record_transaction__bank_account_balance_is_0__record_100_as_amount__balance_is_100():
-    bank_account_id = create_bank_account(balance=0).json()['id']
+    bank_account = create_bank_account(balance=0).json()['id']
 
-    record_transaction(bank_account_id=bank_account_id, amount=100)
+    record_transaction(bank_account=bank_account, amount=100)
 
-    bank_account = get_bank_account(id=bank_account_id).json()
+    bank_account = get_bank_account(id=bank_account).json()
 
     assert bank_account['balance'] == 100
 
 
 def test__record_transaction__bank_account_balance_is_0__record_minus_100_as_amount__balance_is_minus_100():
-    bank_account_id = create_bank_account(balance=0).json()['id']
+    bank_account = create_bank_account(balance=0).json()['id']
 
-    record_transaction(bank_account_id=bank_account_id, amount=-100)
+    record_transaction(bank_account=bank_account, amount=-100)
 
-    bank_account = get_bank_account(id=bank_account_id).json()
+    bank_account = get_bank_account(id=bank_account).json()
 
     assert bank_account['balance'] == -100
 
@@ -100,7 +100,7 @@ def test__record_transaction__valid__return_transaction_schema():
     assert 'date' in result
     assert 'label' in result
     assert 'amount' in result
-    assert 'bank_account_id' in result
+    assert 'bank_account' in result
 
 
 def test__delete_transaction__non_existing_transaction__return_user_error_3():
@@ -130,27 +130,27 @@ def test__delete_transaction__created_T1__delete_T1():
 
 
 def test__delete_transaction__bank_account_balance_is_100__transaction_amount_is_100__balance_is_0():
-    bank_account_id = create_bank_account(balance=0).json()['id']
+    bank_account = create_bank_account(balance=0).json()['id']
 
     transaction_id = record_transaction(
-        bank_account_id=bank_account_id, amount=100).json()['id']
+        bank_account=bank_account, amount=100).json()['id']
 
     delete_transaction(id=transaction_id)
 
-    bank_account = get_bank_account(id=bank_account_id).json()
+    bank_account = get_bank_account(id=bank_account).json()
 
     assert bank_account['balance'] == 0
 
 
 def test__delete_transaction__bank_account_balance_is_minus_100__transaction_amount_is_minus_100__balance_is_0():
-    bank_account_id = create_bank_account(balance=0).json()['id']
+    bank_account = create_bank_account(balance=0).json()['id']
 
     transaction_id = record_transaction(
-        bank_account_id=bank_account_id, amount=-100).json()['id']
+        bank_account=bank_account, amount=-100).json()['id']
 
     delete_transaction(id=transaction_id)
 
-    bank_account = get_bank_account(id=bank_account_id).json()
+    bank_account = get_bank_account(id=bank_account).json()
 
     assert bank_account['balance'] == 0
 
@@ -188,7 +188,7 @@ def test__get_transaction__created_T1__get_T1():
     assert result['date'] == created['date']
     assert result['label'] == created['label']
     assert result['amount'] == created['amount']
-    assert result['bank_account_id'] == created['bank_account_id']
+    assert result['bank_account'] == created['bank_account']
 
 
 def test__get_transaction__valid__return_http_200():
@@ -204,7 +204,7 @@ def test__get_transaction__valid__return_transaction_schema():
     assert 'date' in result
     assert 'label' in result
     assert 'amount' in result
-    assert 'bank_account_id' in result
+    assert 'bank_account' in result
 
 
 def test__update_transaction__non_existing_transaction__return_user_error_3():
@@ -212,9 +212,9 @@ def test__update_transaction__non_existing_transaction__return_user_error_3():
     new_date = '1990-01-01'
     new_label = 'New Label'
     new_amount = 100
-    new_bank_account_id = create_bank_account().json()['id']
+    new_bank_account = create_bank_account().json()['id']
 
-    result = update_transaction(transaction_id, new_date, new_label, new_amount, new_bank_account_id).json()
+    result = update_transaction(transaction_id, new_date, new_label, new_amount, new_bank_account).json()
 
     assert result['detail'] == USER_ERR_3.format(id=transaction_id)
 
@@ -224,9 +224,9 @@ def test__update_transaction__non_existing_transaction__return_http_404():
     new_date = '1990-01-01'
     new_label = 'New Label'
     new_amount = 100
-    new_bank_account_id = create_bank_account().json()['id']
+    new_bank_account = create_bank_account().json()['id']
 
-    result = update_transaction(transaction_id, new_date, new_label, new_amount, new_bank_account_id)
+    result = update_transaction(transaction_id, new_date, new_label, new_amount, new_bank_account)
 
     assert result.status_code == 404
 
@@ -237,9 +237,9 @@ def test__update_transaction__invalid_date_format__return_user_error_7():
     invalid_date_format = '01-01-2021'
     new_label = transaction['label']
     new_amount = transaction['amount']
-    new_bank_account_id = transaction['bank_account_id']
+    new_bank_account = transaction['bank_account']
 
-    result = update_transaction(transaction['id'], invalid_date_format, new_label, new_amount, new_bank_account_id).json()
+    result = update_transaction(transaction['id'], invalid_date_format, new_label, new_amount, new_bank_account).json()
 
     assert result['date'][0] == USER_ERR_7.format(date=invalid_date_format)
 
@@ -250,36 +250,36 @@ def test__update_transaction__invalid_date_format__return_http_400():
     invalid_date_format = '01-01-2021'
     new_label = transaction['label']
     new_amount = transaction['amount']
-    new_bank_account_id = transaction['bank_account_id']
+    new_bank_account = transaction['bank_account']
 
-    result = update_transaction(transaction['id'], invalid_date_format, new_label, new_amount, new_bank_account_id)
+    result = update_transaction(transaction['id'], invalid_date_format, new_label, new_amount, new_bank_account)
 
     assert result.status_code == 400
 
 
-def test__update_transaction__non_existing_bank_account_id__return_user_error_6():
+def test__update_transaction__non_existing_bank_account__return_user_error_6():
     transaction = record_transaction().json()
 
     new_date = transaction['date']
     new_label = transaction['label']
     new_amount = transaction['amount']
-    non_existing_bank_account_id = "non-existing"
+    non_existing_bank_account = "non-existing"
 
-    result = update_transaction(transaction['id'], new_date, new_label, new_amount, non_existing_bank_account_id).json()
+    result = update_transaction(transaction['id'], new_date, new_label, new_amount, non_existing_bank_account).json()
 
-    assert result['bank_account_id'][0] == USER_ERR_6.format(
-        id=non_existing_bank_account_id)
+    assert result['bank_account'][0] == USER_ERR_6.format(
+        id=non_existing_bank_account)
 
 
-def test__update_transaction__non_existing_bank_account_id__return_http_400():
+def test__update_transaction__non_existing_bank_account__return_http_400():
     transaction = record_transaction().json()
 
     new_date = transaction['date']
     new_label = transaction['label']
     new_amount = transaction['amount']
-    non_existing_bank_account_id = "non-existing"
+    non_existing_bank_account = "non-existing"
 
-    result = update_transaction(transaction['id'], new_date, new_label, new_amount, non_existing_bank_account_id)
+    result = update_transaction(transaction['id'], new_date, new_label, new_amount, non_existing_bank_account)
 
     assert result.status_code == 400
 
@@ -290,9 +290,9 @@ def test__update_transaction__new_date__update_transaction_with_new_date():
     new_date = '1990-01-01'
     new_label = transaction['label']
     new_amount = transaction['amount']
-    new_bank_account_id = transaction['bank_account_id']
+    new_bank_account = transaction['bank_account']
 
-    update_transaction(transaction['id'], new_date, new_label, new_amount, new_bank_account_id)
+    update_transaction(transaction['id'], new_date, new_label, new_amount, new_bank_account)
 
     transaction = get_transaction(id=transaction['id']).json()
 
@@ -305,9 +305,9 @@ def test__update_transaction__new_label__update_transaction_with_new_label():
     new_date = transaction['date']
     new_label = 'new label'
     new_amount = transaction['amount']
-    new_bank_account_id = transaction['bank_account_id']
+    new_bank_account = transaction['bank_account']
 
-    update_transaction(transaction['id'], new_date, new_label, new_amount, new_bank_account_id)
+    update_transaction(transaction['id'], new_date, new_label, new_amount, new_bank_account)
 
     transaction = get_transaction(id=transaction['id']).json()
 
@@ -320,9 +320,9 @@ def test__update_transaction__new_amount__update_transaction_with_new_amount():
     new_date = transaction['date']
     new_label = transaction['label']
     new_amount = 1000
-    new_bank_account_id = transaction['bank_account_id']
+    new_bank_account = transaction['bank_account']
 
-    update_transaction(transaction['id'], new_date, new_label, new_amount, new_bank_account_id)
+    update_transaction(transaction['id'], new_date, new_label, new_amount, new_bank_account)
 
     transaction = get_transaction(id=transaction['id']).json()
 
@@ -333,14 +333,14 @@ def test__update_transaction__bank_account_balance_is_100__previous_amount_is_10
     bank_account = create_bank_account(balance=0).json()
 
     transaction = record_transaction(
-        bank_account_id=bank_account['id'], amount=100).json()
+        bank_account=bank_account['id'], amount=100).json()
     
     new_date = transaction['date']
     new_label = transaction['label']
     new_amount = 50
-    new_bank_account_id = transaction['bank_account_id']
+    new_bank_account = transaction['bank_account']
 
-    update_transaction(transaction['id'], new_date, new_label, new_amount, new_bank_account_id)
+    update_transaction(transaction['id'], new_date, new_label, new_amount, new_bank_account)
 
     bank_account = get_bank_account(id=bank_account['id']).json()
 
@@ -348,36 +348,36 @@ def test__update_transaction__bank_account_balance_is_100__previous_amount_is_10
 
 
 def test__update_transaction__bank_account_balance_is_minus_100__previous_amount_is_minus_100__new_amount_is_minus_50__balance_is_minus_50():
-    bank_account_id = create_bank_account(balance=0).json()['id']
+    bank_account = create_bank_account(balance=0).json()['id']
 
     transaction = record_transaction(
-        bank_account_id=bank_account_id, amount=-100).json()
+        bank_account=bank_account, amount=-100).json()
     
     new_date = transaction['date']
     new_label = transaction['label']
     new_amount = -50
-    new_bank_account_id = transaction['bank_account_id']
+    new_bank_account = transaction['bank_account']
 
-    update_transaction(transaction['id'], new_date, new_label, new_amount, new_bank_account_id)
+    update_transaction(transaction['id'], new_date, new_label, new_amount, new_bank_account)
 
-    bank_account = get_bank_account(id=bank_account_id).json()
+    bank_account = get_bank_account(id=bank_account).json()
 
     assert bank_account['balance'] == -50
 
 
-def test__update_transaction__new_bank_account_id__update_transaction_with_new_bank_account_id():
+def test__update_transaction__new_bank_account__update_transaction_with_new_bank_account():
     transaction = record_transaction().json()
 
     new_date = transaction['date']
     new_label = transaction['label']
     new_amount = transaction['amount']
-    new_bank_account_id = create_bank_account().json()['id']
+    new_bank_account = create_bank_account().json()['id']
 
-    update_transaction(transaction['id'], new_date, new_label, new_amount, new_bank_account_id)
+    update_transaction(transaction['id'], new_date, new_label, new_amount, new_bank_account)
 
     transaction = get_transaction(id=transaction['id']).json()
 
-    assert transaction['bank_account_id'] == new_bank_account_id
+    assert transaction['bank_account'] == new_bank_account
 
 
 def test__update_transaction__BA1_balance_is_100__BA2_balance_is_0__transaction_amount_is_100__change_transaction_bank_account_from_BA1_to_BA2__BA1_balance_is_0__BA2_balance_is_100():
@@ -385,14 +385,14 @@ def test__update_transaction__BA1_balance_is_100__BA2_balance_is_0__transaction_
     ba2_id = create_bank_account(balance=0).json()['id']
 
     transaction = record_transaction(
-        bank_account_id=ba1_id, amount=100).json()
+        bank_account=ba1_id, amount=100).json()
 
     new_date = transaction['date']
     new_label = transaction['label']
     new_amount = transaction['amount']
-    new_bank_account_id = ba2_id
+    new_bank_account = ba2_id
 
-    update_transaction(transaction['id'], new_date, new_label, new_amount, new_bank_account_id)
+    update_transaction(transaction['id'], new_date, new_label, new_amount, new_bank_account)
 
     ba1 = get_bank_account(id=ba1_id).json()
     ba2 = get_bank_account(id=ba2_id).json()
@@ -407,8 +407,8 @@ def test__update_transaction__valid__return_http_204():
     new_date = transaction['date']
     new_label = transaction['label']
     new_amount = transaction['amount']
-    new_bank_account_id = transaction['bank_account_id']
+    new_bank_account = transaction['bank_account']
 
-    result = update_transaction(transaction['id'], new_date, new_label, new_amount, new_bank_account_id)
+    result = update_transaction(transaction['id'], new_date, new_label, new_amount, new_bank_account)
 
     assert result.status_code == 204

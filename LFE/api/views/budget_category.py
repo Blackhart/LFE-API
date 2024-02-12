@@ -56,7 +56,7 @@ class BudgetCategoryList(APIView):
 
         budget_category = create_budget_category(
             serializer.validated_data['name'],
-            serializer.validated_data['budget_group_id'])
+            serializer.validated_data['budget_group'])
 
         return Response(OutBudgetCategorySerializer(budget_category).data, status=status.HTTP_201_CREATED)
 
@@ -165,6 +165,6 @@ class BudgetCategoryGroupIdUpdate(APIView):
             raise IDNotFound(id=id)
 
         budget_category = assign_budget_group(
-            id, serializer.validated_data['budget_group_id'])
+            id, serializer.validated_data['budget_group'])
 
         return Response(OutBudgetCategorySerializer(budget_category).data, status=status.HTTP_200_OK)

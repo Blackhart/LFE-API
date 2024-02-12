@@ -6,4 +6,4 @@ def generate_time_based_uuid():
     Returns:
         str: The generated UUID
     """
-    return uuid.uuid1().hex
+    return uuid.uuid4().hex

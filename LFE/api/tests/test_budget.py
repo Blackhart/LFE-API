@@ -88,7 +88,7 @@ def test__delete_budget__created_B1__delete_B1():
 def test__delete_budget__linked_group_G1__delete_group_G1():
     b = create_budget().json()['id']
 
-    g1 = create_budget_group(name='G1', budget_id=b).json()['id']
+    g1 = create_budget_group(name='G1', budget=b).json()['id']
 
     delete_budget(id=b)
 
@@ -100,7 +100,7 @@ def test__delete_budget__linked_group_G1__delete_group_G1():
 def test__delete_budget__linked_bank_account_BA1__delete_bank_account_BA1():
     b = create_budget().json()['id']
 
-    ba1 = create_bank_account(name='BA1', budget_id=b).json()['id']
+    ba1 = create_bank_account(name='BA1', budget=b).json()['id']
 
     delete_budget(id=b)
 
@@ -285,7 +285,7 @@ def test__get_linked_bank_accounts__non_existing_budget__return_http_404():
 def test__get_linked_bank_accounts__linked_BA1__return_BA1():
     b = create_budget().json()['id']
 
-    ba1 = create_bank_account(budget_id=b).json()['id']
+    ba1 = create_bank_account(budget=b).json()['id']
 
     linked = get_linked_bank_accounts(id=b).json()
 
@@ -297,8 +297,8 @@ def test__get_linked_bank_accounts__linked_BA1__return_BA1():
 def test__get_linked_bank_accounts__linked_BA1_BA2_not_linked_BA3__return_BA1_BA2():
     b = create_budget().json()['id']
 
-    ba1 = create_bank_account(name='BA1', budget_id=b).json()['id']
-    ba2 = create_bank_account(name='BA2', budget_id=b).json()['id']
+    ba1 = create_bank_account(name='BA1', budget=b).json()['id']
+    ba2 = create_bank_account(name='BA2', budget=b).json()['id']
     ba3 = create_bank_account(name='BA3').json()['id']
 
     linked = get_linked_bank_accounts(id=b).json()
@@ -328,7 +328,7 @@ def test__get_linked_bank_accounts__valid__return_bank_account_schema():
         assert 'name' in ba
         assert 'type' in ba
         assert 'balance' in ba
-        assert 'budget_id' in ba
+        assert 'budget' in ba
 
 
 def test__get_linked_budget_groups__non_existing_budget__return_user_error_3():
@@ -350,7 +350,7 @@ def test__get_linked_budget_groups__non_existing_budget__return_http_404():
 def test__get_linked_budget_groups__linked_G1__return_G1():
     b = create_budget().json()['id']
 
-    g1 = create_budget_group(budget_id=b).json()['id']
+    g1 = create_budget_group(budget=b).json()['id']
 
     linked = get_linked_budget_groups(id=b).json()
 
@@ -362,8 +362,8 @@ def test__get_linked_budget_groups__linked_G1__return_G1():
 def test__get_linked_budget_groups__linked_G1_G2_not_linked_G3__return_G1_G2():
     b = create_budget().json()['id']
 
-    g1 = create_budget_group(name='G1', budget_id=b).json()['id']
-    g2 = create_budget_group(name='G2', budget_id=b).json()['id']
+    g1 = create_budget_group(name='G1', budget=b).json()['id']
+    g2 = create_budget_group(name='G2', budget=b).json()['id']
     g3 = create_budget_group(name='G3').json()['id']
 
     linked = get_linked_budget_groups(id=b).json()
@@ -391,7 +391,7 @@ def test__get_linked_budget_groups__valid__return_budget_group_schema():
     for g in result:
         assert 'id' in g
         assert 'name' in g
-        assert 'budget_id' in g
+        assert 'budget' in g
 
 
 def test__get_linked_transactions__non_existing_budget__return_user_error_3():
@@ -413,8 +413,8 @@ def test__get_linked_transactions__non_existing_budget__return_http_404():
 def test__get_linked_transactions__BA1_linked_to_B1__T1_linked_to_BA1__return_T1():
     b = create_budget().json()['id']
 
-    ba1 = create_bank_account(budget_id=b).json()['id']
-    t1 = record_transaction(bank_account_id=ba1).json()['id']
+    ba1 = create_bank_account(budget=b).json()['id']
+    t1 = record_transaction(bank_account=ba1).json()['id']
 
     linked = get_linked_transactions(id=b).json()
 
@@ -426,10 +426,10 @@ def test__get_linked_transactions__BA1_linked_to_B1__T1_linked_to_BA1__return_T1
 def test__get_linked_transactions__BA1_BA2_linked_to_B1__T1_linked_to_BA1__T2_linked_to_BA2__return_T1_T2():
     b = create_budget().json()['id']
 
-    ba1 = create_bank_account(name='BA1', budget_id=b).json()['id']
-    ba2 = create_bank_account(name='BA2', budget_id=b).json()['id']
-    t1 = record_transaction(bank_account_id=ba1).json()['id']
-    t2 = record_transaction(bank_account_id=ba2).json()['id']
+    ba1 = create_bank_account(name='BA1', budget=b).json()['id']
+    ba2 = create_bank_account(name='BA2', budget=b).json()['id']
+    t1 = record_transaction(bank_account=ba1).json()['id']
+    t2 = record_transaction(bank_account=ba2).json()['id']
 
     linked = get_linked_transactions(id=b).json()
 
@@ -442,10 +442,10 @@ def test__get_linked_transactions__BA1_BA2_linked_to_B1__T1_linked_to_BA1__T2_li
 def test__get_linked_transactions__BA1_linked_to_B1_and_BA2_not_linked_to_B1___T1_linked_to_BA1__T2_linked_to_BA2__return_T1():
     b = create_budget().json()['id']
 
-    ba1 = create_bank_account(name='BA1', budget_id=b).json()['id']
+    ba1 = create_bank_account(name='BA1', budget=b).json()['id']
     ba2 = create_bank_account(name='BA2').json()['id']
-    t1 = record_transaction(bank_account_id=ba1).json()['id']
-    t2 = record_transaction(bank_account_id=ba2).json()['id']
+    t1 = record_transaction(bank_account=ba1).json()['id']
+    t2 = record_transaction(bank_account=ba2).json()['id']
 
     linked = get_linked_transactions(id=b).json()
 
@@ -455,15 +455,15 @@ def test__get_linked_transactions__BA1_linked_to_B1_and_BA2_not_linked_to_B1___T
     assert t2 not in idx
 
 
-def test__get_linked_transactions__BA1_linked_to_B1__T1_linked_to_BA1__return_B1_as_budget_id():
+def test__get_linked_transactions__BA1_linked_to_B1__T1_linked_to_BA1__return_B1_as_budget():
     b = create_budget().json()['id']
 
-    ba1 = create_bank_account(budget_id=b).json()['id']
-    record_transaction(bank_account_id=ba1)
+    ba1 = create_bank_account(budget=b).json()['id']
+    record_transaction(bank_account=ba1)
 
     linked = get_linked_transactions(id=b).json()
 
-    idx = [t['budget_id'] for t in linked]
+    idx = [t['budget'] for t in linked]
 
     assert b in idx
 
@@ -478,8 +478,8 @@ def test__get_linked_transactions__valid__return_http_200():
 
 def test__get_linked_transactions__valid__return_transaction_schema():
     b = create_budget().json()['id']
-    ba = create_bank_account(name='BA', budget_id=b).json()['id']
-    t = record_transaction(bank_account_id=ba).json()['id']
+    ba = create_bank_account(name='BA', budget=b).json()['id']
+    t = record_transaction(bank_account=ba).json()['id']
 
     result = get_linked_transactions(id=b).json()
 
@@ -488,5 +488,5 @@ def test__get_linked_transactions__valid__return_transaction_schema():
         assert 'date' in t
         assert 'label' in t
         assert 'amount' in t
-        assert 'bank_account_id' in t
-        assert 'budget_id' in t
+        assert 'bank_account' in t
+        assert 'budget' in t

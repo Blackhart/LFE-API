@@ -2,9 +2,10 @@ from datetime import datetime
 
 from api.data.constant import DATE_FORMAT
 
+
 def convert_to_datetime(date_string):
     """ Convert a date string to a datetime object
-    
+
     convert_to_datetime() parses a string representing a time according to a format.
     format should be of the form 'AAAA-MM-DD'.
 
@@ -15,7 +16,7 @@ def convert_to_datetime(date_string):
         datetime: The converted datetime object
     """
     in_date_format = DATE_FORMAT
-    
+
     return datetime.strptime(date_string, in_date_format)
 
 
@@ -34,14 +35,47 @@ def is_valid_datetime_format(date_str, date_format=DATE_FORMAT):
         return True
     except ValueError:
         return False
-    
-    
+
+
 def get_current_date():
     """ Get the current date
-    
+
     Date is of the form 'AAAA-MM-DD'
-    
+
     Returns:
         str: The current date
     """
     return datetime.now().strftime(DATE_FORMAT)
+
+
+def get_current_year_month():
+    """ Get the current year and month
+
+    Year and month are of the form 'AAAA-MM'
+
+    Returns:
+        str: The current year and month
+    """
+    return datetime.now().strftime('%Y-%m')
+
+
+def get_current_year():
+    """ Get the current year
+
+    Year is of the form 'AAAA'
+
+    Returns:
+        str: The current year
+    """
+    return datetime.now().strftime('%Y')
+
+
+def get_current_month():
+    """ Get the current month
+
+    Month is of the form 'MM'
+
+    Returns:
+        str: The current month
+    """
+    return datetime.now().strftime('%m')

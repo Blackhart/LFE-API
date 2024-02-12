@@ -3,28 +3,28 @@ from api.models.poco.transaction import Transaction
 from api.models.dal.bank_account import update_balance
 
 
-def record_transaction(date, label, amount, bank_account_id):
+def record_transaction(date, label, amount, bank_account):
     """ Record a transaction
 
     Args:
         date (str): Date of the transaction. Should be of the form 'AAAA-MM-DD'
         label (str): Label of the transaction
         amount (float): Amount of the transaction
-        bank_account_id (str): Bank account ID to link to
+        bank_account (str): Bank account ID to link to
 
     Returns:
         Transaction: The created transaction
     """
     uid = generate_time_based_uuid()
 
-    update_balance(bank_account_id.id, amount)
+    update_balance(bank_account.id, amount)
 
     return Transaction.objects.create(
         id=uid,
         date=date,
         label=label,
         amount=amount,
-        bank_account_id=bank_account_id
+        bank_account=bank_account
     )
 
 
@@ -36,12 +36,12 @@ def delete_transaction(id):
     """
     transaction = Transaction.objects.get(id=id)
 
-    update_balance(transaction.bank_account_id.id, -transaction.amount)
+    update_balance(transaction.bank_account.id, -transaction.amount)
 
     transaction.delete()
 
 
-def update_transaction(id, date, label, amount, bank_account_id):
+def update_transaction(id, date, label, amount, bank_account):
     """ Update a transaction
 
     Args:
@@ -49,19 +49,19 @@ def update_transaction(id, date, label, amount, bank_account_id):
         date (str): Date of the transaction. Should be of the form 'AAAA-MM-DD'
         label (str): Label of the transaction
         amount (float): Amount of the transaction
-        bank_account_id (str): Bank account ID to link to
+        bank_account (str): Bank account ID to link to
     """
     transaction = get_transaction(id)
 
-    update_balance(transaction.bank_account_id.id, -transaction.amount)
+    update_balance(transaction.bank_account.id, -transaction.amount)
 
     transaction.date = date
     transaction.label = label
     transaction.amount = amount
-    transaction.bank_account_id = bank_account_id
+    transaction.bank_account = bank_account
     transaction.save()
 
-    update_balance(bank_account_id.id, transaction.amount)
+    update_balance(bank_account.id, transaction.amount)
 
 
 def get_transaction(id):

@@ -56,7 +56,7 @@ class BudgetGroupList(APIView):
 
         budget_group = create_budget_group(
             serializer.validated_data['name'],
-            serializer.validated_data['budget_id'])
+            serializer.validated_data['budget'])
 
         return Response(OutBudgetGroupSerializer(budget_group).data, status=status.HTTP_201_CREATED)
 

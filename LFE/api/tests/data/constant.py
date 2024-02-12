@@ -43,3 +43,5 @@ RECORD_TRANSACTION_ENTRY_POINT = 'transactions'
 DELETE_TRANSACTION_ENTRY_POINT = 'transactions/{id}'
 GET_TRANSACTION_ENTRY_POINT = 'transactions/{id}'
 UPDATE_TRANSACTION_ENTRY_POINT = 'transactions/{id}'
+
+GET_NET_WORTH_REPORT = 'reports/net-worth'

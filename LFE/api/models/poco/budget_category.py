@@ -9,7 +9,7 @@ class BudgetCategory(models.Model):
         
     id = models.CharField(max_length=100, primary_key=True)
     name = models.CharField(max_length=100)
-    budget_group_id = models.ForeignKey(BudgetGroup, on_delete=models.CASCADE)
+    budget_group = models.ForeignKey(BudgetGroup, on_delete=models.CASCADE)
     
     def __str__(self):
-        return f'BudgetCategory(id={self.id}, name={self.name}, budget_group_id={self.budget_group_id})'
+        return f'BudgetCategory(id={self.id}, name={self.name}, budget_group={self.budget_group})'

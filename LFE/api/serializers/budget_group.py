@@ -8,16 +8,16 @@ from api.models.poco.budget_group import BudgetGroup
 class InBudgetGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = BudgetGroup
-        fields = ['name', 'budget_id']
+        fields = ['name', 'budget']
 
     def __init__(self, *args, **kwargs):
         super(InBudgetGroupSerializer, self).__init__(*args, **kwargs)
         if 'data' in kwargs:
-            self.fields['budget_id'].error_messages['does_not_exist'] = USER_ERR_5.format(
-                id=kwargs['data']['budget_id'])
+            self.fields['budget'].error_messages['does_not_exist'] = USER_ERR_5.format(
+                id=kwargs['data']['budget'])
             self.fields['name'].error_messages['blank'] = USER_ERR_1
         else:
-            self.fields['budget_id'].error_messages['does_not_exist'] = USER_ERR_5.format(
+            self.fields['budget'].error_messages['does_not_exist'] = USER_ERR_5.format(
                 id='')
             self.fields['name'].error_messages['blank'] = USER_ERR_1
 
@@ -36,4 +36,4 @@ class InBudgetGroupNameUpdateSerializer(serializers.ModelSerializer):
 class OutBudgetGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = BudgetGroup
-        fields = ['id', 'name', 'budget_id']
+        fields = ['id', 'name', 'budget']

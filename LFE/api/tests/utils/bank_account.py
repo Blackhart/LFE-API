@@ -36,9 +36,9 @@ def get_get_transactions_by_bank_account_url(id):
     return STAGGING_BASE_URL + '/' + GET_TRANSACTIONS_BY_BANK_ACCOUNT_ENTRY_POINT.format(id=id)
 
 
-def create_bank_account(name="My Bank Account", type=BankAccountType.STANDARD, balance=0.0, budget_id=None):
-    if not budget_id:
-        budget_id = create_budget().json()['id']
+def create_bank_account(name="My Bank Account", type=BankAccountType.STANDARD, balance=0.0, budget=None):
+    if not budget:
+        budget = create_budget().json()['id']
 
     url = get_create_bank_account_url()
 
@@ -46,7 +46,7 @@ def create_bank_account(name="My Bank Account", type=BankAccountType.STANDARD, b
         "name": name,
         "type": type,
         "balance": float(balance),
-        "budget_id": budget_id
+        "budget": budget
     }
 
     return requests.post(url, json=payload)

@@ -4,3 +4,4 @@ drf-spectacular
 drf-spectacular[redoc]
 pytest
 requests
+pandas

@@ -2,19 +2,19 @@ from api.core.uuid import generate_time_based_uuid
 from api.models.poco.budget_group import BudgetGroup
 
 
-def create_budget_group(name, budget_id):
+def create_budget_group(name, budget):
     """ Create a budget group
 
     Args:
         name (str): Name of the budget group
-        budget_id (str): Budget ID to link to
+        budget (str): Budget ID to link to
 
     Returns:
         BudgetGroup: The created budget group
     """
     uid = generate_time_based_uuid()
 
-    return BudgetGroup.objects.create(id=uid, name=name, budget_id=budget_id)
+    return BudgetGroup.objects.create(id=uid, name=name, budget=budget)
 
 
 def delete_budget_group(id):

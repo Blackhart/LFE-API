@@ -40,7 +40,7 @@ class TransactionList(APIView):
             serializer.validated_data['date'],
             serializer.validated_data['label'],
             serializer.validated_data['amount'],
-            serializer.validated_data['bank_account_id']
+            serializer.validated_data['bank_account']
         )
 
         return Response(OutTransactionSerializer(transaction).data, status=status.HTTP_201_CREATED)
@@ -111,7 +111,7 @@ class TransactionUpdate(APIView):
             serializer.validated_data['date'],
             serializer.validated_data['label'],
             serializer.validated_data['amount'],
-            serializer.validated_data['bank_account_id']
+            serializer.validated_data['bank_account']
         )
 
         return Response(status=status.HTTP_204_NO_CONTENT)

@@ -1,6 +1,6 @@
 from api.core.uuid import generate_time_based_uuid
 from api.models.poco.budget import Budget
-from api.models.dal.bank_account import list_transactions_by_bank_account_id
+from api.models.dal.bank_account import list_transactions_by_bank_account
 
 
 def list_budgets():
@@ -121,7 +121,7 @@ def list_transactions_by_budget(id):
     bank_accounts = list_bank_accounts_by_budget(id)
 
     for bank_account in bank_accounts:
-        transactions_for_bank_account = list_transactions_by_bank_account_id(
+        transactions_for_bank_account = list_transactions_by_bank_account(
             bank_account.id)
         transactions.extend(transactions_for_bank_account)
 
