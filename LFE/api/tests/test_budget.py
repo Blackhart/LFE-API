@@ -4,16 +4,11 @@ from api.data.constant import USER_ERR_3
 from api.tests.utils.budget import create_budget
 from api.tests.utils.budget import delete_budget
 from api.tests.utils.budget import get_budget
-from api.tests.utils.budget import get_linked_bank_accounts
 from api.tests.utils.budget import get_linked_budget_groups
-from api.tests.utils.budget import get_linked_transactions
 from api.tests.utils.budget import list_budgets
 from api.tests.utils.budget import rename_budget
-from api.tests.utils.bank_account import create_bank_account
-from api.tests.utils.bank_account import get_bank_account
 from api.tests.utils.budget_group import create_budget_group
 from api.tests.utils.budget_group import get_budget_group
-from api.tests.utils.transaction import record_transaction
 
 
 def test__create_budget__blank_name__return_user_error_1():
@@ -93,18 +88,6 @@ def test__delete_budget__linked_group_G1__delete_group_G1():
     delete_budget(id=b)
 
     result = get_budget_group(id=g1)
-
-    assert result.status_code == 404
-
-
-def test__delete_budget__linked_bank_account_BA1__delete_bank_account_BA1():
-    b = create_budget().json()['id']
-
-    ba1 = create_bank_account(name='BA1', budget=b).json()['id']
-
-    delete_budget(id=b)
-
-    result = get_bank_account(id=ba1)
 
     assert result.status_code == 404
 
@@ -266,71 +249,6 @@ def test__get_budget__valid__return_budget_schema():
     assert 'name' in result
 
 
-def test__get_linked_bank_accounts__non_existing_budget__return_user_error_3():
-    non_existing = 'non-existing'
-
-    result = get_linked_bank_accounts(id=non_existing).json()
-
-    assert result['detail'] == USER_ERR_3.format(id=non_existing)
-
-
-def test__get_linked_bank_accounts__non_existing_budget__return_http_404():
-    non_existing = 'non-existing'
-
-    result = get_linked_bank_accounts(id=non_existing)
-
-    assert result.status_code == 404
-
-
-def test__get_linked_bank_accounts__linked_BA1__return_BA1():
-    b = create_budget().json()['id']
-
-    ba1 = create_bank_account(budget=b).json()['id']
-
-    linked = get_linked_bank_accounts(id=b).json()
-
-    idx = [ba['id'] for ba in linked]
-
-    assert ba1 in idx
-
-
-def test__get_linked_bank_accounts__linked_BA1_BA2_not_linked_BA3__return_BA1_BA2():
-    b = create_budget().json()['id']
-
-    ba1 = create_bank_account(name='BA1', budget=b).json()['id']
-    ba2 = create_bank_account(name='BA2', budget=b).json()['id']
-    ba3 = create_bank_account(name='BA3').json()['id']
-
-    linked = get_linked_bank_accounts(id=b).json()
-
-    idx = [ba['id'] for ba in linked]
-
-    assert ba1 in idx
-    assert ba2 in idx
-    assert ba3 not in idx
-
-
-def test__get_linked_bank_accounts__valid__return_http_200():
-    b = create_budget().json()['id']
-
-    result = get_linked_bank_accounts(id=b)
-
-    assert result.status_code == 200
-
-
-def test__get_linked_bank_accounts__valid__return_bank_account_schema():
-    b = create_budget().json()['id']
-
-    result = get_linked_bank_accounts(id=b).json()
-
-    for ba in result:
-        assert 'id' in ba
-        assert 'name' in ba
-        assert 'type' in ba
-        assert 'balance' in ba
-        assert 'budget' in ba
-
-
 def test__get_linked_budget_groups__non_existing_budget__return_user_error_3():
     non_existing = 'non-existing'
 
@@ -392,101 +310,3 @@ def test__get_linked_budget_groups__valid__return_budget_group_schema():
         assert 'id' in g
         assert 'name' in g
         assert 'budget' in g
-
-
-def test__get_linked_transactions__non_existing_budget__return_user_error_3():
-    non_existing = 'non-existing'
-
-    result = get_linked_transactions(id=non_existing).json()
-
-    assert result['detail'] == USER_ERR_3.format(id=non_existing)
-
-
-def test__get_linked_transactions__non_existing_budget__return_http_404():
-    non_existing = 'non-existing'
-
-    result = get_linked_transactions(id=non_existing)
-
-    assert result.status_code == 404
-
-
-def test__get_linked_transactions__BA1_linked_to_B1__T1_linked_to_BA1__return_T1():
-    b = create_budget().json()['id']
-
-    ba1 = create_bank_account(budget=b).json()['id']
-    t1 = record_transaction(bank_account=ba1).json()['id']
-
-    linked = get_linked_transactions(id=b).json()
-
-    idx = [t['id'] for t in linked]
-
-    assert t1 in idx
-
-
-def test__get_linked_transactions__BA1_BA2_linked_to_B1__T1_linked_to_BA1__T2_linked_to_BA2__return_T1_T2():
-    b = create_budget().json()['id']
-
-    ba1 = create_bank_account(name='BA1', budget=b).json()['id']
-    ba2 = create_bank_account(name='BA2', budget=b).json()['id']
-    t1 = record_transaction(bank_account=ba1).json()['id']
-    t2 = record_transaction(bank_account=ba2).json()['id']
-
-    linked = get_linked_transactions(id=b).json()
-
-    idx = [t['id'] for t in linked]
-
-    assert t1 in idx
-    assert t2 in idx
-
-
-def test__get_linked_transactions__BA1_linked_to_B1_and_BA2_not_linked_to_B1___T1_linked_to_BA1__T2_linked_to_BA2__return_T1():
-    b = create_budget().json()['id']
-
-    ba1 = create_bank_account(name='BA1', budget=b).json()['id']
-    ba2 = create_bank_account(name='BA2').json()['id']
-    t1 = record_transaction(bank_account=ba1).json()['id']
-    t2 = record_transaction(bank_account=ba2).json()['id']
-
-    linked = get_linked_transactions(id=b).json()
-
-    idx = [t['id'] for t in linked]
-
-    assert t1 in idx
-    assert t2 not in idx
-
-
-def test__get_linked_transactions__BA1_linked_to_B1__T1_linked_to_BA1__return_B1_as_budget():
-    b = create_budget().json()['id']
-
-    ba1 = create_bank_account(budget=b).json()['id']
-    record_transaction(bank_account=ba1)
-
-    linked = get_linked_transactions(id=b).json()
-
-    idx = [t['budget'] for t in linked]
-
-    assert b in idx
-
-
-def test__get_linked_transactions__valid__return_http_200():
-    b = create_budget().json()['id']
-
-    result = get_linked_transactions(id=b)
-
-    assert result.status_code == 200
-
-
-def test__get_linked_transactions__valid__return_transaction_schema():
-    b = create_budget().json()['id']
-    ba = create_bank_account(name='BA', budget=b).json()['id']
-    t = record_transaction(bank_account=ba).json()['id']
-
-    result = get_linked_transactions(id=b).json()
-
-    for t in result:
-        assert 'id' in t
-        assert 'date' in t
-        assert 'label' in t
-        assert 'amount' in t
-        assert 'bank_account' in t
-        assert 'budget' in t

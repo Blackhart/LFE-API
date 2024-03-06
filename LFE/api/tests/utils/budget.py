@@ -31,16 +31,8 @@ def get_get_budget_url(id):
     return STAGGING_BASE_URL + '/' + GET_BUDGET_ENTRY_POINT.format(id=id)
 
 
-def get_get_linked_bank_accounts_url(id):
-    return STAGGING_BASE_URL + '/' + GET_BANK_ACCOUNTS_BY_BUDGET_ENTRY_POINT.format(id=id)
-
-
 def get_get_linked_budget_groups_url(id):
     return STAGGING_BASE_URL + '/' + GET_BUDGET_GROUPS_BY_BUDGET_ENTRY_POINT.format(id=id)
-
-
-def get_get_linked_transactions_url(id):
-    return STAGGING_BASE_URL + '/' + GET_TRANSACTIONS_BY_BUDGET_ENTRY_POINT.format(id=id)
 
 
 def create_budget(name="My Budget"):
@@ -79,19 +71,7 @@ def get_budget(id):
     return requests.get(url)
 
 
-def get_linked_bank_accounts(id):
-    url = get_get_linked_bank_accounts_url(id)
-
-    return requests.get(url)
-
-
 def get_linked_budget_groups(id):
     url = get_get_linked_budget_groups_url(id)
-
-    return requests.get(url)
-
-
-def get_linked_transactions(id):
-    url = get_get_linked_transactions_url(id)
 
     return requests.get(url)

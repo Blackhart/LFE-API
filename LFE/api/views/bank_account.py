@@ -57,8 +57,7 @@ class BankAccountList(APIView):
         bank_account = create_bank_account(
             serializer.validated_data['name'],
             serializer.validated_data['type'],
-            serializer.validated_data['balance'],
-            serializer.validated_data['budget'])
+            serializer.validated_data['balance'])
 
         return Response(OutBankAccountSerializer(bank_account).data, status=status.HTTP_201_CREATED)
 

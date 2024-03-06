@@ -16,7 +16,7 @@ def bank_account_type_supported(value):
         serializers.ValidationError: If the bank account type is not supported
 
     Returns:
-        bool: True if the bank account type is supported, False otherwise
+        str: The bank account type if it is supported
     """
     if value not in SUPPORTED_BANK_ACCOUNT_TYPE:
         raise serializers.ValidationError(USER_ERR_2.format(

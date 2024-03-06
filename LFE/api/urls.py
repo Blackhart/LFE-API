@@ -3,9 +3,7 @@ from django.urls import path
 from api.views.budget import BudgetList
 from api.views.budget import BudgetUpdate
 from api.views.budget import BudgetNameUpdate
-from api.views.budget import BankAccountsByBudget
 from api.views.budget import BudgetGroupsByBudget
-from api.views.budget import TransactionsByBudget
 from api.views.bank_account import BankAccountList
 from api.views.bank_account import BankAccountUpdate
 from api.views.bank_account import BankAccountNameUpdate
@@ -26,9 +24,7 @@ urlpatterns = [
     path('budgets/', BudgetList.as_view()),
     path('budgets/<str:id>', BudgetUpdate.as_view()),
     path('budgets/<str:id>/name', BudgetNameUpdate.as_view()),
-    path('budgets/<str:id>/bank-accounts', BankAccountsByBudget.as_view()),
     path('budgets/<str:id>/budget-groups', BudgetGroupsByBudget.as_view()),
-    path('budgets/<str:id>/transactions', TransactionsByBudget.as_view()),
     path('bank-accounts/', BankAccountList.as_view()),
     path('bank-accounts/<str:id>', BankAccountUpdate.as_view()),
     path('bank-accounts/<str:id>/name', BankAccountNameUpdate.as_view()),

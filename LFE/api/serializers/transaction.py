@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from api.data.constant import USER_ERR_6, USER_ERR_7, USER_ERR_8
+from api.data.constant import USER_ERR_6, USER_ERR_7
 from api.models.poco.transaction import Transaction
 from api.validators.bank_account import bank_account_exists
 from api.validators.date import start_date_occurs_after_end_date
@@ -74,19 +74,3 @@ class OutTransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
         fields = ['id', 'date', 'label', 'amount', 'bank_account']
-
-
-class OutTransactionsByBudgetSerializer(serializers.ModelSerializer):
-    """
-    Serializer for retrieving outgoing transactions by budget.
-    """
-
-    budget = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Transaction
-        fields = ['id', 'date', 'label', 'amount',
-                  'bank_account', 'budget']
-
-    def get_budget(self, obj):
-        return obj.bank_account.budget.id

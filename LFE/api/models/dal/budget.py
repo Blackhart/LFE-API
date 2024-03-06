@@ -1,6 +1,5 @@
 from api.core.uuid import generate_time_based_uuid
 from api.models.poco.budget import Budget
-from api.models.dal.bank_account import list_transactions_by_bank_account
 
 
 def list_budgets():
@@ -76,21 +75,6 @@ def is_budget_exists(id):
     return Budget.objects.filter(id=id).exists()
 
 
-def list_bank_accounts_by_budget(id):
-    """ Return all linked bank accounts
-
-    Args:
-        id (str): Budget ID
-
-    Returns:
-        list: List of bank accounts
-    """
-    budget = Budget.objects.get(id=id)
-    bank_accounts = budget.bankaccount_set.all()
-
-    return bank_accounts
-
-
 def list_budget_groups_by_budget(id):
     """ Return all linked budget groups
 
@@ -104,27 +88,3 @@ def list_budget_groups_by_budget(id):
     budget_groups = budget.budgetgroup_set.all()
 
     return budget_groups
-
-
-def list_transactions_by_budget(id):
-    """ Return all linked transactions
-
-    Transaction list is sorted by date in descending order
-
-    Args:
-        id (str): Budget ID
-
-    Returns:
-        list: List of transactions
-    """
-    transactions = []
-    bank_accounts = list_bank_accounts_by_budget(id)
-
-    for bank_account in bank_accounts:
-        transactions_for_bank_account = list_transactions_by_bank_account(
-            bank_account.id)
-        transactions.extend(transactions_for_bank_account)
-
-    transactions.sort(key=lambda x: x.date, reverse=True)
-
-    return transactions

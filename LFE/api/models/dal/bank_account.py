@@ -2,21 +2,20 @@ from api.core.uuid import generate_time_based_uuid
 from api.models.poco.bank_account import BankAccount
 
 
-def create_bank_account(name, type, balance, budget):
+def create_bank_account(name, type, balance):
     """ Create a bank account
 
     Args:
         name (str): Name of the bank account
         type (str): Type of the bank account
         balance (float): Starting balance of the bank account
-        budget (str): Budget ID to link to
 
     Returns:
         BankAccount: The created bank account
     """
     uid = generate_time_based_uuid()
 
-    return BankAccount.objects.create(id=uid, name=name, type=type, balance=balance, budget=budget)
+    return BankAccount.objects.create(id=uid, name=name, type=type, balance=balance)
 
 
 def delete_bank_account(id):
