@@ -2,7 +2,7 @@
 # SERVER URL #
 ##############
 
-STAGGING_BASE_URL = 'http://127.0.0.1:8000'
+STAGGING_BASE_URL = 'http://127.0.0.1:3000'
 
 
 ################

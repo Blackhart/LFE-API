@@ -15,7 +15,7 @@ class InBankAccountSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super(InBankAccountSerializer, self).__init__(*args, **kwargs)
         if 'data' in kwargs:
-            self.fields['budget'].error_messages['does_not_exist'] = USER_ERR_5.format(id=kwargs['data']['budget'])
+            self.fields['budget'].error_messages['does_not_exist'] = USER_ERR_5.format(id=kwargs['data'].get('budget', ''))
             self.fields['name'].error_messages['blank'] = USER_ERR_1
         else:
             self.fields['budget'].error_messages['does_not_exist'] = USER_ERR_5.format(id='')
