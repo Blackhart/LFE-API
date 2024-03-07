@@ -1,6 +1,5 @@
 from api.core.uuid import generate_time_based_uuid
 from api.models.poco.transaction import Transaction
-from api.models.dal.bank_account import update_balance
 
 
 def record_transaction(date, label, amount, bank_account):
@@ -16,8 +15,6 @@ def record_transaction(date, label, amount, bank_account):
         Transaction: The created transaction
     """
     uid = generate_time_based_uuid()
-
-    update_balance(bank_account.id, amount)
 
     return Transaction.objects.create(
         id=uid,
@@ -36,8 +33,6 @@ def delete_transaction(id):
     """
     transaction = Transaction.objects.get(id=id)
 
-    update_balance(transaction.bank_account.id, -transaction.amount)
-
     transaction.delete()
 
 
@@ -53,15 +48,11 @@ def update_transaction(id, date, label, amount, bank_account):
     """
     transaction = get_transaction(id)
 
-    update_balance(transaction.bank_account.id, -transaction.amount)
-
     transaction.date = date
     transaction.label = label
     transaction.amount = amount
     transaction.bank_account = bank_account
     transaction.save()
-
-    update_balance(bank_account.id, transaction.amount)
 
 
 def get_transaction(id):

@@ -6,6 +6,8 @@ from api.validators.bank_account import bank_account_type_supported
 
 
 class InBankAccountSerializer(serializers.ModelSerializer):
+    balance = serializers.FloatField(required=False)
+    
     class Meta:
         model = BankAccount
         fields = ['name', 'type', 'balance']
@@ -44,6 +46,8 @@ class InBankAccountNameUpdateSerializer(serializers.ModelSerializer):
 
 
 class OutBankAccountSerializer(serializers.ModelSerializer):
+    balance = serializers.FloatField(required=True)
+    
     class Meta:
         model = BankAccount
         fields = ['id', 'name', 'type', 'balance']

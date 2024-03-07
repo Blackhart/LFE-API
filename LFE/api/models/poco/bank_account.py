@@ -4,7 +4,6 @@ class BankAccount(models.Model):
     id = models.CharField(max_length=100, primary_key=True)
     name = models.CharField(max_length=100)
     type = models.CharField(max_length=10)
-    balance = models.FloatField(default=0)
     
     def __str__(self):
-        return f'BankAccount(id={self.id}, name={self.name}, type={self.type}, balance={self.balance})'
+        return f'BankAccount(id={self.id}, name={self.name}, type={self.type})'

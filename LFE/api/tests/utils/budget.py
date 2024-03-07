@@ -6,9 +6,7 @@ from api.tests.data.constant import DELETE_BUDGET_ENTRY_POINT
 from api.tests.data.constant import RENAME_BUDGET_ENTRY_POINT
 from api.tests.data.constant import LIST_BUDGETS_ENTRY_POINT
 from api.tests.data.constant import GET_BUDGET_ENTRY_POINT
-from api.tests.data.constant import GET_BANK_ACCOUNTS_BY_BUDGET_ENTRY_POINT
 from api.tests.data.constant import GET_BUDGET_GROUPS_BY_BUDGET_ENTRY_POINT
-from api.tests.data.constant import GET_TRANSACTIONS_BY_BUDGET_ENTRY_POINT
 
 
 def get_create_budget_url():
