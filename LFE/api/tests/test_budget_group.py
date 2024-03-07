@@ -1,4 +1,4 @@
-from api.data.constant import USER_ERR_1, USER_ERR_3, USER_ERR_5
+from api.data.constant import USER_ERR_1, USER_ERR_4, USER_ERR_5
 
 from api.tests.utils.budget import create_budget
 
@@ -31,15 +31,15 @@ def test__create_budget_group__empty_name__return_http_400():
 def test__create_budget_group__non_existing_budget__return_user_error_5():
     b = 'non-existing'
 
-    result = create_budget_group(budget=b).json()
+    result = create_budget_group(budget_id=b).json()
 
-    assert result['budget'][0] == USER_ERR_5.format(id=b)
+    assert result['budget_id'][0] == USER_ERR_5.format(id=b)
 
 
 def test__create_budget_group__non_existing_budget__return_http_400():
     b = 'non existing'
 
-    result = create_budget_group(budget=b)
+    result = create_budget_group(budget_id=b)
 
     assert result.status_code == 400
 
@@ -55,9 +55,9 @@ def test__create_budget_group__G1_as_name__create_group_named_G1():
 def test__create_budget_group__B1_as_budget__create_group_linked_to_B1():
     b1 = create_budget(name='B1').json()['id']
 
-    result = create_budget_group(budget=b1).json()
+    result = create_budget_group(budget_id=b1).json()
 
-    assert result['budget'] == b1
+    assert result['budget_id'] == b1
 
 
 def test__create_budget_group__valid__return_http_201():
@@ -75,7 +75,7 @@ def test__create_budget_group__valid__return_group_schema():
 
     assert 'id' in result
     assert 'name' in result
-    assert 'budget' in result
+    assert 'budget_id' in result
 
 
 def test__delete_budget_group__non_existing_group__return_user_error_3():
@@ -83,7 +83,7 @@ def test__delete_budget_group__non_existing_group__return_user_error_3():
 
     result = delete_budget_group(id=non_existing_group).json()
 
-    assert result['detail'] == USER_ERR_3.format(id=non_existing_group)
+    assert result['id'][0] == USER_ERR_4.format(id=non_existing_group)
 
 
 def test__delete_budget_group__non_existing_group__return_http_404():
@@ -91,7 +91,7 @@ def test__delete_budget_group__non_existing_group__return_http_404():
 
     result = delete_budget_group(id=non_existing_group)
 
-    assert result.status_code == 404
+    assert result.status_code == 400
 
 
 def test__delete_budget_group__created_G1_group__delete_group_G1():
@@ -103,18 +103,18 @@ def test__delete_budget_group__created_G1_group__delete_group_G1():
 
     result = get_budget_group(id=created['id'])
 
-    assert result.status_code == 404
+    assert result.status_code == 400
 
 
 def test__delete_budget_group__group_G1_linked_to_category_C1__delete_category_C1():
     g1 = create_budget_group(name='G1').json()['id']
-    c1 = create_budget_category(name='C1', budget_group=g1).json()['id']
+    c1 = create_budget_category(name='C1', budget_group_id=g1).json()['id']
 
     delete_budget_group(id=g1)
 
     result = get_budget_category(id=c1)
 
-    assert result.status_code == 404
+    assert result.status_code == 400
 
 
 def test__delete_budget_group__valid__return_http_200():
@@ -132,7 +132,7 @@ def test__rename_budget_group__non_existing_group__return_user_error_3():
 
     result = rename_budget_group(id=non_existing_group).json()
 
-    assert result['detail'] == USER_ERR_3.format(id=non_existing_group)
+    assert result['id'][0] == USER_ERR_4.format(id=non_existing_group)
 
 
 def test__rename_budget_group__non_existing_group__return_http_404():
@@ -140,7 +140,7 @@ def test__rename_budget_group__non_existing_group__return_http_404():
 
     result = rename_budget_group(id=non_existing_group)
 
-    assert result.status_code == 404
+    assert result.status_code == 400
 
 
 def test__rename_budget_group__empty_name__return_user_error_1():
@@ -237,7 +237,7 @@ def test__get_budget_group__non_existing_group__return_user_error_3():
 
     result = get_budget_group(id=non_existing_group).json()
 
-    assert result['detail'] == USER_ERR_3.format(id=non_existing_group)
+    assert result['id'][0] == USER_ERR_4.format(id=non_existing_group)
 
 
 def test__get_budget_group__non_existing_group__return_http_404():
@@ -245,7 +245,7 @@ def test__get_budget_group__non_existing_group__return_http_404():
 
     result = get_budget_group(id=non_existing_group)
 
-    assert result.status_code == 404
+    assert result.status_code == 400
 
 
 def test__get_budget_group__created_G1__return_G1():
@@ -279,7 +279,7 @@ def test__get_assigned_categories__non_existing_group__return_user_error_3():
 
     result = get_assigned_categories(id=non_existing_group).json()
 
-    assert result['detail'] == USER_ERR_3.format(id=non_existing_group)
+    assert result['id'][0] == USER_ERR_4.format(id=non_existing_group)
 
 
 def test__get_assigned_categories__non_existing_group__return_http_404():
@@ -287,14 +287,14 @@ def test__get_assigned_categories__non_existing_group__return_http_404():
 
     result = get_assigned_categories(id=non_existing_group)
 
-    assert result.status_code == 404
+    assert result.status_code == 400
 
 
 def test__get_assigned_categories__assigned_C1_C2__return_C1_C2():
     g = create_budget_group().json()['id']
 
-    c1 = create_budget_category(name='C1', budget_group=g).json()['id']
-    c2 = create_budget_category(name='C2', budget_group=g).json()['id']
+    c1 = create_budget_category(name='C1', budget_group_id=g).json()['id']
+    c2 = create_budget_category(name='C2', budget_group_id=g).json()['id']
 
     categories = get_assigned_categories(id=g).json()
 
@@ -308,9 +308,9 @@ def test__get_assigned_categories__created_C1_C2_C3_assigned_C1_C2__return_C1_C2
     g1 = create_budget_group().json()['id']
     g2 = create_budget_group().json()['id']
 
-    c1 = create_budget_category(name='C1', budget_group=g1).json()['id']
-    c2 = create_budget_category(name='C2', budget_group=g1).json()['id']
-    c3 = create_budget_category(name='C3', budget_group=g2).json()['id']
+    c1 = create_budget_category(name='C1', budget_group_id=g1).json()['id']
+    c2 = create_budget_category(name='C2', budget_group_id=g1).json()['id']
+    c3 = create_budget_category(name='C3', budget_group_id=g2).json()['id']
 
     categories = get_assigned_categories(id=g1).json()
 
@@ -330,11 +330,15 @@ def test__get_assigned_categories__valid__return_http_200():
 
 
 def test__get_assigned_categories__valid__return_category_schema():
-    g = create_budget_group().json()
+    g = create_budget_group().json()['id']
+    
+    create_budget_category(name='C1', budget_group_id=g)
+    create_budget_category(name='C2', budget_group_id=g)
+    create_budget_category(name='C3', budget_group_id=g)
 
-    result = get_assigned_categories(id=g['id']).json()
+    result = get_assigned_categories(id=g).json()
 
     for category in result:
         assert 'id' in category
         assert 'name' in category
-        assert 'budget_group' in category
+        assert 'budget_group_id' in category

@@ -7,7 +7,7 @@ def create_budget_category(name, budget_group):
 
     Args:
         name (str): Name of the budget category
-        budget_group (str): ID of the budget group to link to
+        budget_group (BudgetGroup): Budget group to link to
 
     Returns:
         BudgetCategory: The budget category
@@ -76,18 +76,18 @@ def is_budget_category_exists(id):
     return BudgetCategory.objects.filter(id=id).exists()
 
 
-def assign_budget_group(id, group_id):
+def assign_budget_group(id, budget_group):
     """ Assign a group to the existing category
     
     The previous group will be overwritten.
 
     Args:
         id (str): ID of the budget category
-        group_id (str): Group to assign
+        budget_group (BudgetGroup): Budget group to link to
 
     Returns:
         BudgetCategory: The budget category
     """
-    BudgetCategory.objects.filter(id=id).update(budget_group=group_id)
+    BudgetCategory.objects.filter(id=id).update(budget_group=budget_group)
 
     return BudgetCategory.objects.get(id=id)

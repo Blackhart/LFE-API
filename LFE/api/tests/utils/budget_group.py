@@ -35,15 +35,15 @@ def get_get_assigned_categories_url(id):
     return STAGGING_BASE_URL + '/' + GET_ASSIGNED_CATEGORIES_ENTRY_POINT.format(id=id)
 
 
-def create_budget_group(name="My Budget Group", budget=None):
-    if not budget:
-        budget = create_budget().json()['id']
+def create_budget_group(name="My Budget Group", budget_id=None):
+    if not budget_id:
+        budget_id = create_budget().json()['id']
         
     url = get_create_budget_group_url()
     
     payload = {
         "name": name,
-        "budget": budget
+        "budget_id": budget_id
     }
 
     return requests.post(url, json=payload)

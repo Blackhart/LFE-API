@@ -3,7 +3,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from drf_spectacular.utils import extend_schema
 
-from api.core.exceptions import IDNotFound
 from api.core.date import get_current_date
 from api.models.dal.bank_account import list_bank_accounts
 from api.models.dal.bank_account import create_bank_account
@@ -11,11 +10,13 @@ from api.models.dal.bank_account import delete_bank_account
 from api.models.dal.bank_account import rename_bank_account
 from api.models.dal.bank_account import get_bank_account
 from api.models.dal.bank_account import get_bank_account_balance
-from api.models.dal.bank_account import is_bank_account_exists
 from api.models.dal.bank_account import list_transactions_by_bank_account
 from api.models.dal.transaction import record_transaction
-from api.serializers.bank_account import InBankAccountSerializer
-from api.serializers.bank_account import InBankAccountNameUpdateSerializer
+from api.serializers.bank_account import InCreateBankAccountSerializer
+from api.serializers.bank_account import InRenameBankAccountSerializer
+from api.serializers.bank_account import InDeleteBankAccountSerializer
+from api.serializers.bank_account import InGetBankAccountSerializer
+from api.serializers.bank_account import InListTransactionsByBankAccountSerializer
 from api.serializers.bank_account import OutBankAccountSerializer
 from api.serializers.transaction import OutTransactionSerializer
 
@@ -46,7 +47,7 @@ class BankAccountList(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @extend_schema(
-        request=InBankAccountSerializer,
+        request=InCreateBankAccountSerializer,
         responses={
             status.HTTP_201_CREATED: OutBankAccountSerializer,
             status.HTTP_400_BAD_REQUEST: None
@@ -56,7 +57,7 @@ class BankAccountList(APIView):
     def post(self, request):
         """ Create a bank account
         """
-        serializer = InBankAccountSerializer(data=request.data)
+        serializer = InCreateBankAccountSerializer(data=request.data)
 
         serializer.is_valid(raise_exception=True)
 
@@ -95,10 +96,11 @@ class BankAccountUpdate(APIView):
     def delete(self, request, id):
         """ Delete a bank account
         """
-        if not is_bank_account_exists(id):
-            raise IDNotFound(id=id)
+        serializer = InDeleteBankAccountSerializer(data={'id': id})
 
-        delete_bank_account(id)
+        serializer.is_valid(raise_exception=True)
+
+        delete_bank_account(serializer.validated_data['id'])
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -112,10 +114,11 @@ class BankAccountUpdate(APIView):
     def get(self, request, id):
         """ Get a bank account
         """
-        if not is_bank_account_exists(id):
-            raise IDNotFound(id=id)
+        serializer = InGetBankAccountSerializer(data={'id': id})
 
-        bank_account = get_bank_account(id)
+        serializer.is_valid(raise_exception=True)
+
+        bank_account = get_bank_account(serializer.validated_data['id'])
         
         bank_account.balance = get_bank_account_balance(bank_account.id)
 
@@ -131,7 +134,7 @@ class BankAccountNameUpdate(APIView):
     """
 
     @extend_schema(
-        request=InBankAccountNameUpdateSerializer,
+        request=InRenameBankAccountSerializer,
         responses={
             status.HTTP_200_OK: OutBankAccountSerializer,
             status.HTTP_400_BAD_REQUEST: None,
@@ -142,15 +145,14 @@ class BankAccountNameUpdate(APIView):
     def put(self, request, id):
         """ Rename a bank account
         """
-        serializer = InBankAccountNameUpdateSerializer(data=request.data)
+        serializer = InRenameBankAccountSerializer(data={**request.data, 'id': id})
 
         serializer.is_valid(raise_exception=True)
 
-        if not is_bank_account_exists(id):
-            raise IDNotFound(id=id)
-
         bank_account = rename_bank_account(
-            id, serializer.validated_data['name'])
+            serializer.validated_data['id'], 
+            serializer.validated_data['name']
+        )
         
         bank_account.balance = get_bank_account_balance(bank_account.id)
 
@@ -175,10 +177,11 @@ class TransactionsByBankAccount(APIView):
     def get(self, request, id):
         """ Get all transactions by bank account
         """
-        if not is_bank_account_exists(id):
-            raise IDNotFound(id=id)
+        serializer = InListTransactionsByBankAccountSerializer(data={'id': id})
+
+        serializer.is_valid(raise_exception=True)
         
-        transactions = list_transactions_by_bank_account(id)
+        transactions = list_transactions_by_bank_account(serializer.validated_data['id'])
 
         serializer = OutTransactionSerializer(transactions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

@@ -69,7 +69,7 @@ def test__get_net_worth__bank_account_without_transactions__return_empty_yearly(
 def test__get_net_worth__record_100_a_day__return_daily_100():
     ba = create_bank_account().json()['id']
 
-    record_transaction(date='2024-01-01', amount=100, bank_account=ba)
+    record_transaction(date='2024-01-01', amount=100, bank_account_id=ba)
 
     response = get_net_worth_report([ba]).json()
 
@@ -79,8 +79,8 @@ def test__get_net_worth__record_100_a_day__return_daily_100():
 def test__get_net_worth__record_100_twice_a_day__return_daily_200():
     ba = create_bank_account().json()['id']
 
-    record_transaction(date='2024-01-01', amount=100, bank_account=ba)
-    record_transaction(date='2024-01-01', amount=100, bank_account=ba)
+    record_transaction(date='2024-01-01', amount=100, bank_account_id=ba)
+    record_transaction(date='2024-01-01', amount=100, bank_account_id=ba)
 
     response = get_net_worth_report([ba]).json()
 
@@ -92,7 +92,7 @@ def test__get_net_worth__record_100_every_day__return_daily_adding_up_100_per_da
 
     num_days = calendar.monthrange(2024, 1)[1]
     for i in range(1, num_days + 1):
-        record_transaction(amount=100, bank_account=ba, date=f'2024-01-{i}')
+        record_transaction(amount=100, bank_account_id=ba, date=f'2024-01-{i}')
 
     response = get_net_worth_report([ba]).json()
 
@@ -103,7 +103,7 @@ def test__get_net_worth__record_100_every_day__return_daily_adding_up_100_per_da
 def test__get_net_worth__record_100_a_month__return_monthly_100():
     ba = create_bank_account().json()['id']
 
-    record_transaction(date='2024-01-01', amount=100, bank_account=ba)
+    record_transaction(date='2024-01-01', amount=100, bank_account_id=ba)
 
     response = get_net_worth_report([ba]).json()
 
@@ -113,8 +113,8 @@ def test__get_net_worth__record_100_a_month__return_monthly_100():
 def test__get_net_worth__record_100_twice_a_month__return_monthly_200():
     ba = create_bank_account().json()['id']
 
-    record_transaction(date='2024-01-01', amount=100, bank_account=ba)
-    record_transaction(date='2024-01-02', amount=100, bank_account=ba)
+    record_transaction(date='2024-01-01', amount=100, bank_account_id=ba)
+    record_transaction(date='2024-01-02', amount=100, bank_account_id=ba)
 
     response = get_net_worth_report([ba]).json()
 
@@ -125,7 +125,7 @@ def test__get_net_worth__record_100_every_month__return_monthly_adding_up_100_pe
     ba = create_bank_account().json()['id']
 
     for i in range(1, 13):
-        record_transaction(amount=100, bank_account=ba,
+        record_transaction(amount=100, bank_account_id=ba,
                            date=f'2024-{str(i).zfill(2)}-01')
 
     response = get_net_worth_report([ba]).json()
@@ -137,7 +137,7 @@ def test__get_net_worth__record_100_every_month__return_monthly_adding_up_100_pe
 def test__get_net_worth__record_100_a_year__return_yearly_100():
     ba = create_bank_account().json()['id']
 
-    record_transaction(date='2024-01-01', amount=100, bank_account=ba)
+    record_transaction(date='2024-01-01', amount=100, bank_account_id=ba)
 
     response = get_net_worth_report([ba]).json()
 
@@ -147,8 +147,8 @@ def test__get_net_worth__record_100_a_year__return_yearly_100():
 def test__get_net_worth__record_100_twice_a_year__return_yearly_200():
     ba = create_bank_account().json()['id']
 
-    record_transaction(date='2024-01-01', amount=100, bank_account=ba)
-    record_transaction(date='2024-01-02', amount=100, bank_account=ba)
+    record_transaction(date='2024-01-01', amount=100, bank_account_id=ba)
+    record_transaction(date='2024-01-02', amount=100, bank_account_id=ba)
 
     response = get_net_worth_report([ba]).json()
 
@@ -159,7 +159,7 @@ def test__get_net_worth__record_100_every_year__return_yearly_adding_up_100_per_
     ba = create_bank_account().json()['id']
 
     for i in range(1990, 2024):
-        record_transaction(amount=100, bank_account=ba, date=f'{i}-01-01')
+        record_transaction(amount=100, bank_account_id=ba, date=f'{i}-01-01')
 
     response = get_net_worth_report([ba]).json()
 
@@ -172,8 +172,8 @@ def test__get_net_worth__record_100_a_day_in_2_bank_accounts__return_daily_200()
     ba1 = create_bank_account().json()['id']
     ba2 = create_bank_account().json()['id']
 
-    record_transaction(date='2024-01-01', amount=100, bank_account=ba1)
-    record_transaction(date='2024-01-01', amount=100, bank_account=ba2)
+    record_transaction(date='2024-01-01', amount=100, bank_account_id=ba1)
+    record_transaction(date='2024-01-01', amount=100, bank_account_id=ba2)
 
     response = get_net_worth_report([ba1, ba2]).json()
 
@@ -184,10 +184,10 @@ def test__get_net_worth__record_100_twice_a_day_in_2_bank_accounts__return_daily
     ba1 = create_bank_account().json()['id']
     ba2 = create_bank_account().json()['id']
 
-    record_transaction(date='2024-01-01', amount=100, bank_account=ba1)
-    record_transaction(date='2024-01-01', amount=100, bank_account=ba1)
-    record_transaction(date='2024-01-01', amount=100, bank_account=ba2)
-    record_transaction(date='2024-01-01', amount=100, bank_account=ba2)
+    record_transaction(date='2024-01-01', amount=100, bank_account_id=ba1)
+    record_transaction(date='2024-01-01', amount=100, bank_account_id=ba1)
+    record_transaction(date='2024-01-01', amount=100, bank_account_id=ba2)
+    record_transaction(date='2024-01-01', amount=100, bank_account_id=ba2)
 
     response = get_net_worth_report([ba1, ba2]).json()
 
@@ -200,8 +200,8 @@ def test__get_net_worth__record_100_every_day_in_2_bank_accounts__return_daily_a
 
     num_days = calendar.monthrange(2024, 1)[1]
     for i in range(1, num_days + 1):
-        record_transaction(amount=100, bank_account=ba1, date=f'2024-01-{i}')
-        record_transaction(amount=100, bank_account=ba2, date=f'2024-01-{i}')
+        record_transaction(amount=100, bank_account_id=ba1, date=f'2024-01-{i}')
+        record_transaction(amount=100, bank_account_id=ba2, date=f'2024-01-{i}')
 
     response = get_net_worth_report([ba1, ba2]).json()
 
@@ -213,8 +213,8 @@ def test__get_net_worth__record_100_a_month_in_2_bank_accounts__return_monthly_2
     ba1 = create_bank_account().json()['id']
     ba2 = create_bank_account().json()['id']
 
-    record_transaction(date='2024-01-01', amount=100, bank_account=ba1)
-    record_transaction(date='2024-01-01', amount=100, bank_account=ba2)
+    record_transaction(date='2024-01-01', amount=100, bank_account_id=ba1)
+    record_transaction(date='2024-01-01', amount=100, bank_account_id=ba2)
 
     response = get_net_worth_report([ba1, ba2]).json()
 
@@ -225,10 +225,10 @@ def test__get_net_worth__record_100_twice_a_month_in_2_bank_accounts__return_mon
     ba1 = create_bank_account().json()['id']
     ba2 = create_bank_account().json()['id']
 
-    record_transaction(date='2024-01-01', amount=100, bank_account=ba1)
-    record_transaction(date='2024-01-02', amount=100, bank_account=ba1)
-    record_transaction(date='2024-01-01', amount=100, bank_account=ba2)
-    record_transaction(date='2024-01-02', amount=100, bank_account=ba2)
+    record_transaction(date='2024-01-01', amount=100, bank_account_id=ba1)
+    record_transaction(date='2024-01-02', amount=100, bank_account_id=ba1)
+    record_transaction(date='2024-01-01', amount=100, bank_account_id=ba2)
+    record_transaction(date='2024-01-02', amount=100, bank_account_id=ba2)
 
     response = get_net_worth_report([ba1, ba2]).json()
 
@@ -240,9 +240,9 @@ def test__get_net_worth__record_100_every_month_in_2_bank_accounts__return_month
     ba2 = create_bank_account().json()['id']
 
     for i in range(1, 13):
-        record_transaction(amount=100, bank_account=ba1,
+        record_transaction(amount=100, bank_account_id=ba1,
                            date=f'2024-{str(i).zfill(2)}-01')
-        record_transaction(amount=100, bank_account=ba2,
+        record_transaction(amount=100, bank_account_id=ba2,
                            date=f'2024-{str(i).zfill(2)}-01')
 
     response = get_net_worth_report([ba1, ba2]).json()
@@ -255,8 +255,8 @@ def test__get_net_worth__record_100_a_year_in_2_bank_accounts__return_yearly_200
     ba1 = create_bank_account().json()['id']
     ba2 = create_bank_account().json()['id']
 
-    record_transaction(date='2024-01-01', amount=100, bank_account=ba1)
-    record_transaction(date='2024-01-01', amount=100, bank_account=ba2)
+    record_transaction(date='2024-01-01', amount=100, bank_account_id=ba1)
+    record_transaction(date='2024-01-01', amount=100, bank_account_id=ba2)
 
     response = get_net_worth_report([ba1, ba2]).json()
 
@@ -267,10 +267,10 @@ def test__get_net_worth__record_100_twice_a_year_in_2_bank_accounts__return_year
     ba1 = create_bank_account().json()['id']
     ba2 = create_bank_account().json()['id']
 
-    record_transaction(date='2024-01-01', amount=100, bank_account=ba1)
-    record_transaction(date='2024-01-02', amount=100, bank_account=ba1)
-    record_transaction(date='2024-01-01', amount=100, bank_account=ba2)
-    record_transaction(date='2024-01-02', amount=100, bank_account=ba2)
+    record_transaction(date='2024-01-01', amount=100, bank_account_id=ba1)
+    record_transaction(date='2024-01-02', amount=100, bank_account_id=ba1)
+    record_transaction(date='2024-01-01', amount=100, bank_account_id=ba2)
+    record_transaction(date='2024-01-02', amount=100, bank_account_id=ba2)
 
     response = get_net_worth_report([ba1, ba2]).json()
 
@@ -282,8 +282,8 @@ def test__get_net_worth__record_100_every_year_in_2_bank_accounts__return_yearly
     ba2 = create_bank_account().json()['id']
 
     for i in range(1990, 2024):
-        record_transaction(amount=100, bank_account=ba1, date=f'{i}-01-01')
-        record_transaction(amount=100, bank_account=ba2, date=f'{i}-01-01')
+        record_transaction(amount=100, bank_account_id=ba1, date=f'{i}-01-01')
+        record_transaction(amount=100, bank_account_id=ba2, date=f'{i}-01-01')
 
     response = get_net_worth_report([ba1, ba2]).json()
 
@@ -295,7 +295,7 @@ def test__get_net_worth__record_100_every_year_in_2_bank_accounts__return_yearly
 def test__get_net_worth__record_100_in_2024_01_01__start_date_2024_01_02__does_not_take_transaction_in_net_worth():
     ba = create_bank_account().json()['id']
 
-    record_transaction(date='2024-01-01', amount=100, bank_account=ba)
+    record_transaction(date='2024-01-01', amount=100, bank_account_id=ba)
 
     response = get_net_worth_report([ba], start_date='2024-01-02').json()
 
@@ -305,7 +305,7 @@ def test__get_net_worth__record_100_in_2024_01_01__start_date_2024_01_02__does_n
 def test__get_net_worth__record_100_in_2024_01_01__start_date_2024_01_01__does_take_transaction_in_net_worth():
     ba = create_bank_account().json()['id']
 
-    record_transaction(date='2024-01-01', amount=100, bank_account=ba)
+    record_transaction(date='2024-01-01', amount=100, bank_account_id=ba)
 
     response = get_net_worth_report([ba], start_date='2024-01-01').json()
 
@@ -315,7 +315,7 @@ def test__get_net_worth__record_100_in_2024_01_01__start_date_2024_01_01__does_t
 def test__get_net_worth__record_100_in_2024_01_01__start_date_is_none__does_take_transaction_in_net_worth():
     ba = create_bank_account().json()['id']
 
-    record_transaction(date='2024-01-01', amount=100, bank_account=ba)
+    record_transaction(date='2024-01-01', amount=100, bank_account_id=ba)
 
     response = get_net_worth_report([ba], start_date=None).json()
 
@@ -325,7 +325,7 @@ def test__get_net_worth__record_100_in_2024_01_01__start_date_is_none__does_take
 def test__get_net_worth__record_100_in_2024_01_02__end_date_2024_01_01__does_not_take_transaction_in_net_worth():
     ba = create_bank_account().json()['id']
 
-    record_transaction(date='2024-01-02', amount=100, bank_account=ba)
+    record_transaction(date='2024-01-02', amount=100, bank_account_id=ba)
 
     response = get_net_worth_report([ba], end_date='2024-01-01').json()
 
@@ -335,7 +335,7 @@ def test__get_net_worth__record_100_in_2024_01_02__end_date_2024_01_01__does_not
 def test__get_net_worth__record_100_in_2024_01_02__end_date_2024_01_02__does_take_transaction_in_net_worth():
     ba = create_bank_account().json()['id']
 
-    record_transaction(date='2024-01-02', amount=100, bank_account=ba)
+    record_transaction(date='2024-01-02', amount=100, bank_account_id=ba)
 
     response = get_net_worth_report([ba], end_date='2024-01-02').json()
 
@@ -345,7 +345,7 @@ def test__get_net_worth__record_100_in_2024_01_02__end_date_2024_01_02__does_tak
 def test__get_net_worth__record_100_in_2024_01_02__end_date_is_none__does_take_transaction_in_net_worth():
     ba = create_bank_account().json()['id']
 
-    record_transaction(date='2024-01-02', amount=100, bank_account=ba)
+    record_transaction(date='2024-01-02', amount=100, bank_account_id=ba)
 
     response = get_net_worth_report([ba], end_date=None).json()
 
@@ -373,7 +373,7 @@ def test__get_net_worth__start_date_occurs_after_end_date__return_http_400():
 
 def test__get_net_worth__valid__return_http_200():
     ba = create_bank_account().json()['id']
-    t = record_transaction(amount=100, bank_account=ba)
+    t = record_transaction(amount=100, bank_account_id=ba)
 
     response = get_net_worth_report([ba])
 

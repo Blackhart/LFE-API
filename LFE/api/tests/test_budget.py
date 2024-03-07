@@ -1,5 +1,5 @@
 from api.data.constant import USER_ERR_1
-from api.data.constant import USER_ERR_3
+from api.data.constant import USER_ERR_5
 
 from api.tests.utils.budget import create_budget
 from api.tests.utils.budget import delete_budget
@@ -57,7 +57,7 @@ def test__delete_budget__non_existing_budget__return_user_error_3():
 
     result = delete_budget(id=non_existing).json()
 
-    assert result['detail'] == USER_ERR_3.format(id=non_existing)
+    assert result['id'][0] == USER_ERR_5.format(id=non_existing)
 
 
 def test__delete_budget__non_existing_budget__return_http_404():
@@ -65,7 +65,7 @@ def test__delete_budget__non_existing_budget__return_http_404():
 
     result = delete_budget(id=non_existing)
 
-    assert result.status_code == 404
+    assert result.status_code == 400
 
 
 def test__delete_budget__created_B1__delete_B1():
@@ -77,19 +77,19 @@ def test__delete_budget__created_B1__delete_B1():
 
     result = get_budget(id=created['id'])
 
-    assert result.status_code == 404
+    assert result.status_code == 400
 
 
 def test__delete_budget__linked_group_G1__delete_group_G1():
     b = create_budget().json()['id']
 
-    g1 = create_budget_group(name='G1', budget=b).json()['id']
+    g1 = create_budget_group(name='G1', budget_id=b).json()['id']
 
     delete_budget(id=b)
 
     result = get_budget_group(id=g1)
 
-    assert result.status_code == 404
+    assert result.status_code == 400
 
 
 def test__delete_budget__valid__return_http_200():
@@ -107,7 +107,7 @@ def test__rename_budget__non_existing_budget__return_user_error_3():
 
     result = rename_budget(id=non_existing).json()
 
-    assert result['detail'] == USER_ERR_3.format(id=non_existing)
+    assert result['id'][0] == USER_ERR_5.format(id=non_existing)
 
 
 def test__rename_budget__non_existing_budget__return_http_404():
@@ -115,7 +115,7 @@ def test__rename_budget__non_existing_budget__return_http_404():
 
     result = rename_budget(id=non_existing)
 
-    assert result.status_code == 404
+    assert result.status_code == 400
 
 
 def test__rename_budget__empty_name__return_user_error_1():
@@ -212,7 +212,7 @@ def test__get_budget__non_existing_budget__return_user_error_3():
 
     result = get_budget(id=non_existing).json()
 
-    assert result['detail'] == USER_ERR_3.format(id=non_existing)
+    assert result['id'][0] == USER_ERR_5.format(id=non_existing)
 
 
 def test__get_budget__non_existing_budget__return_http_404():
@@ -220,7 +220,7 @@ def test__get_budget__non_existing_budget__return_http_404():
 
     result = get_budget(id=non_existing)
 
-    assert result.status_code == 404
+    assert result.status_code == 400
 
 
 def test__get_budget__created_B1__return_B1():
@@ -254,7 +254,7 @@ def test__get_linked_budget_groups__non_existing_budget__return_user_error_3():
 
     result = get_linked_budget_groups(id=non_existing).json()
 
-    assert result['detail'] == USER_ERR_3.format(id=non_existing)
+    assert result['id'][0] == USER_ERR_5.format(id=non_existing)
 
 
 def test__get_linked_budget_groups__non_existing_budget__return_http_404():
@@ -262,13 +262,13 @@ def test__get_linked_budget_groups__non_existing_budget__return_http_404():
 
     result = get_linked_budget_groups(id=non_existing)
 
-    assert result.status_code == 404
+    assert result.status_code == 400
 
 
 def test__get_linked_budget_groups__linked_G1__return_G1():
     b = create_budget().json()['id']
 
-    g1 = create_budget_group(budget=b).json()['id']
+    g1 = create_budget_group(budget_id=b).json()['id']
 
     linked = get_linked_budget_groups(id=b).json()
 
@@ -280,8 +280,8 @@ def test__get_linked_budget_groups__linked_G1__return_G1():
 def test__get_linked_budget_groups__linked_G1_G2_not_linked_G3__return_G1_G2():
     b = create_budget().json()['id']
 
-    g1 = create_budget_group(name='G1', budget=b).json()['id']
-    g2 = create_budget_group(name='G2', budget=b).json()['id']
+    g1 = create_budget_group(name='G1', budget_id=b).json()['id']
+    g2 = create_budget_group(name='G2', budget_id=b).json()['id']
     g3 = create_budget_group(name='G3').json()['id']
 
     linked = get_linked_budget_groups(id=b).json()
@@ -303,10 +303,13 @@ def test__get_linked_budget_groups__valid__return_http_200():
 
 def test__get_linked_budget_groups__valid__return_budget_group_schema():
     b = create_budget().json()['id']
+    
+    create_budget_group(name='G1', budget_id=b).json()['id']
+    create_budget_group(name='G2', budget_id=b).json()['id']
 
     result = get_linked_budget_groups(id=b).json()
 
     for g in result:
         assert 'id' in g
         assert 'name' in g
-        assert 'budget' in g
+        assert 'budget_id' in g

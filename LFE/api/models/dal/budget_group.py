@@ -7,7 +7,7 @@ def create_budget_group(name, budget):
 
     Args:
         name (str): Name of the budget group
-        budget (str): Budget ID to link to
+        budget (Budget): Budget to link to
 
     Returns:
         BudgetGroup: The created budget group

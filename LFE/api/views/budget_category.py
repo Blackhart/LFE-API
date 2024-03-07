@@ -3,17 +3,18 @@ from rest_framework.response import Response
 from rest_framework import status
 from drf_spectacular.utils import extend_schema
 
-from api.core.exceptions import IDNotFound
 from api.models.dal.budget_category import list_budget_categories
 from api.models.dal.budget_category import create_budget_category
 from api.models.dal.budget_category import delete_budget_category
 from api.models.dal.budget_category import rename_budget_category
 from api.models.dal.budget_category import assign_budget_group
 from api.models.dal.budget_category import get_budget_category
-from api.models.dal.budget_category import is_budget_category_exists
-from api.serializers.budget_category import InBudgetCategorySerializer
-from api.serializers.budget_category import InBudgetCategoryNameUpdateSerializer
-from api.serializers.budget_category import InBudgetCategoryGroupIdUpdateSerializer
+from api.models.dal.budget_group import get_budget_group
+from api.serializers.budget_category import InCreateBudgetCategorySerializer
+from api.serializers.budget_category import InRenameBudgetCategorySerializer
+from api.serializers.budget_category import InAssignGroupToBudgetCategorySerializer
+from api.serializers.budget_category import InDeleteBudgetCategorySerializer
+from api.serializers.budget_category import InGetBudgetCategorySerializer
 from api.serializers.budget_category import OutBudgetCategorySerializer
 
 
@@ -40,7 +41,7 @@ class BudgetCategoryList(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @extend_schema(
-        request=InBudgetCategorySerializer,
+        request=InCreateBudgetCategorySerializer,
         responses={
             status.HTTP_201_CREATED: OutBudgetCategorySerializer,
             status.HTTP_400_BAD_REQUEST: None
@@ -50,13 +51,17 @@ class BudgetCategoryList(APIView):
     def post(self, request):
         """ Create a budget category
         """
-        serializer = InBudgetCategorySerializer(data=request.data)
+        serializer = InCreateBudgetCategorySerializer(data=request.data)
 
         serializer.is_valid(raise_exception=True)
 
+        budget_group = get_budget_group(
+            serializer.validated_data['budget_group_id']
+        )
+
         budget_category = create_budget_category(
             serializer.validated_data['name'],
-            serializer.validated_data['budget_group'])
+            budget_group)
 
         return Response(OutBudgetCategorySerializer(budget_category).data, status=status.HTTP_201_CREATED)
 
@@ -79,10 +84,11 @@ class BudgetCategoryUpdate(APIView):
     def delete(self, request, id):
         """ Delete a budget category
         """
-        if not is_budget_category_exists(id):
-            raise IDNotFound(id=id)
+        serializer = InDeleteBudgetCategorySerializer(data={'id': id})
 
-        delete_budget_category(id)
+        serializer.is_valid(raise_exception=True)
+
+        delete_budget_category(serializer.validated_data['id'])
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -96,10 +102,11 @@ class BudgetCategoryUpdate(APIView):
     def get(self, request, id):
         """ Get a budget category
         """
-        if not is_budget_category_exists(id):
-            raise IDNotFound(id=id)
+        serializer = InGetBudgetCategorySerializer(data={'id': id})
 
-        budget_category = get_budget_category(id)
+        serializer.is_valid(raise_exception=True)
+
+        budget_category = get_budget_category(serializer.validated_data['id'])
 
         return Response(OutBudgetCategorySerializer(budget_category).data, status=status.HTTP_200_OK)
 
@@ -113,7 +120,7 @@ class BudgetCategoryNameUpdate(APIView):
     """
 
     @extend_schema(
-        request=InBudgetCategoryNameUpdateSerializer,
+        request=InRenameBudgetCategorySerializer,
         responses={
             status.HTTP_200_OK: OutBudgetCategorySerializer,
             status.HTTP_400_BAD_REQUEST: None,
@@ -124,15 +131,14 @@ class BudgetCategoryNameUpdate(APIView):
     def put(self, request, id):
         """ Rename a budget category
         """
-        serializer = InBudgetCategoryNameUpdateSerializer(data=request.data)
+        serializer = InRenameBudgetCategorySerializer(data={**request.data, 'id': id})
 
         serializer.is_valid(raise_exception=True)
 
-        if not is_budget_category_exists(id):
-            raise IDNotFound(id=id)
-
         budget_category = rename_budget_category(
-            id, serializer.validated_data['name'])
+            serializer.validated_data['id'], 
+            serializer.validated_data['name']
+        )
 
         return Response(OutBudgetCategorySerializer(budget_category).data, status=status.HTTP_200_OK)
 
@@ -146,7 +152,7 @@ class BudgetCategoryGroupIdUpdate(APIView):
     """
 
     @extend_schema(
-        request=InBudgetCategoryGroupIdUpdateSerializer,
+        request=InAssignGroupToBudgetCategorySerializer,
         responses={
             status.HTTP_200_OK: OutBudgetCategorySerializer,
             status.HTTP_400_BAD_REQUEST: None,
@@ -157,14 +163,13 @@ class BudgetCategoryGroupIdUpdate(APIView):
     def put(self, request, id):
         """ Overwrite a budget category's budget group ID
         """
-        serializer = InBudgetCategoryGroupIdUpdateSerializer(data=request.data)
+        serializer = InAssignGroupToBudgetCategorySerializer(data={**request.data, 'id': id})
 
         serializer.is_valid(raise_exception=True)
 
-        if not is_budget_category_exists(id):
-            raise IDNotFound(id=id)
-
         budget_category = assign_budget_group(
-            id, serializer.validated_data['budget_group'])
+            serializer.validated_data['id'], 
+            serializer.validated_data['budget_group_id']
+        )
 
         return Response(OutBudgetCategorySerializer(budget_category).data, status=status.HTTP_200_OK)

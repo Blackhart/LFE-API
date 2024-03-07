@@ -1,4 +1,4 @@
-from api.data.constant import USER_ERR_1, USER_ERR_2, USER_ERR_3
+from api.data.constant import USER_ERR_1, USER_ERR_2, USER_ERR_6
 from api.data.constant import SUPPORTED_BANK_ACCOUNT_TYPE
 from api.data.bank_account_type import BankAccountType
 
@@ -108,7 +108,7 @@ def test__delete_bank_account__existing_account__delete_the_account():
 
     saved = get_bank_account(created['id'])
 
-    assert saved.status_code == 404
+    assert saved.status_code == 400
 
 
 def test__delete_bank_account__non_existing_account__return_user_error_3():
@@ -116,7 +116,7 @@ def test__delete_bank_account__non_existing_account__return_user_error_3():
 
     result = delete_bank_account(invalid_id).json()
 
-    assert result['detail'] == USER_ERR_3.format(id=invalid_id)
+    assert result['id'][0] == USER_ERR_6.format(id=invalid_id)
 
 
 def test__delete_bank_account__non_existing_account__return_http_404():
@@ -124,18 +124,18 @@ def test__delete_bank_account__non_existing_account__return_http_404():
 
     result = delete_bank_account(invalid_id)
 
-    assert result.status_code == 404
+    assert result.status_code == 400
 
 
 def test__delete_bank_account__linked_transaction_T1__delete_transaction_T1():
     ba1 = create_bank_account().json()['id']
-    t1 = record_transaction(bank_account=ba1).json()['id']
+    t1 = record_transaction(bank_account_id=ba1).json()['id']
 
     delete_bank_account(ba1)
 
     result = get_transaction(t1)
 
-    assert result.status_code == 404
+    assert result.status_code == 400
     
 
 def test__delete_bank_account__valid__return_http_200():
@@ -214,7 +214,7 @@ def test__rename_bank_account__non_existing_account__return_user_error_3():
 
     result = rename_bank_account(id=invalid_id).json()
 
-    assert result['detail'] == USER_ERR_3.format(id=invalid_id)
+    assert result['id'][0] == USER_ERR_6.format(id=invalid_id)
 
 
 def test__rename_bank_account__non_existing_account__return_http_404():
@@ -222,7 +222,7 @@ def test__rename_bank_account__non_existing_account__return_http_404():
 
     result = rename_bank_account(id=invalid_id)
 
-    assert result.status_code == 404
+    assert result.status_code == 400
 
 
 def test__list_bank_account__BA1_BA2_BA3_created__return_BA1_BA2_BA3():
@@ -298,7 +298,7 @@ def test__get_bank_account__non_existing_account__return_user_error_3():
 
     result = get_bank_account(id=invalid_id).json()
 
-    assert result['detail'] == USER_ERR_3.format(id=invalid_id)
+    assert result['id'][0] == USER_ERR_6.format(id=invalid_id)
 
 
 def test__get_bank_account__non_existing_account__return_http_404():
@@ -306,7 +306,7 @@ def test__get_bank_account__non_existing_account__return_http_404():
 
     result = get_bank_account(id=invalid_id)
 
-    assert result.status_code == 404
+    assert result.status_code == 400
 
 
 def test__get_linked_transactions__non_existing_account__return_user_error_3():
@@ -314,7 +314,7 @@ def test__get_linked_transactions__non_existing_account__return_user_error_3():
 
     result = get_transactions_by_bank_account(id=invalid_id).json()
 
-    assert result['detail'] == USER_ERR_3.format(id=invalid_id)
+    assert result['id'][0] == USER_ERR_6.format(id=invalid_id)
 
 
 def test__get_linked_transactions__non_existing_account__return_http_404():
@@ -322,12 +322,12 @@ def test__get_linked_transactions__non_existing_account__return_http_404():
 
     result = get_transactions_by_bank_account(id=invalid_id)
 
-    assert result.status_code == 404
+    assert result.status_code == 400
 
 
 def test__get_linked_transactions__linked_T1__return_T1():
     ba1 = create_bank_account().json()['id']
-    t1 = record_transaction(bank_account=ba1).json()['id']
+    t1 = record_transaction(bank_account_id=ba1).json()['id']
 
     result = get_transactions_by_bank_account(id=ba1).json()
 
@@ -339,8 +339,8 @@ def test__get_linked_transactions__linked_T1__return_T1():
 def test__get_linked_transactions__linked_T1_T2_not_linked_T3__return_T1_T2():
     ba = create_bank_account().json()['id']
 
-    t1 = record_transaction(bank_account=ba).json()['id']
-    t2 = record_transaction(bank_account=ba).json()['id']
+    t1 = record_transaction(bank_account_id=ba).json()['id']
+    t2 = record_transaction(bank_account_id=ba).json()['id']
     t3 = record_transaction().json()['id']
 
     result = get_transactions_by_bank_account(id=ba).json()
@@ -362,7 +362,7 @@ def test__get_linked_transactions__valid__return_http_200():
 
 def test__get_linked_transactions__valid__return_transaction_schema():
     ba1 = create_bank_account().json()['id']
-    t1 = record_transaction(bank_account=ba1).json()['id']
+    t1 = record_transaction(bank_account_id=ba1).json()['id']
 
     result = get_transactions_by_bank_account(id=ba1).json()
 
@@ -371,4 +371,4 @@ def test__get_linked_transactions__valid__return_transaction_schema():
         assert 'date' in transaction
         assert 'label' in transaction
         assert 'amount' in transaction
-        assert 'bank_account' in transaction
+        assert 'bank_account_id' in transaction

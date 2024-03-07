@@ -1,52 +1,83 @@
 from rest_framework import serializers
 
 from api.data.constant import USER_ERR_1
-from api.data.constant import USER_ERR_4
-from api.models.poco.budget_category import BudgetCategory
+from api.validators.budget_category import budget_category_exists
+from api.validators.budget_group import budget_group_exists
 
 
-class InBudgetCategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BudgetCategory
-        fields = ['name', 'budget_group']
+class InCreateBudgetCategorySerializer(serializers.Serializer):
+    name = serializers.CharField(
+        max_length=100,
+        required=True,
+        allow_blank=False,
+        trim_whitespace=True,
+        error_messages={'blank': USER_ERR_1})
 
-    def __init__(self, *args, **kwargs):
-        super(InBudgetCategorySerializer, self).__init__(*args, **kwargs)
-        
-        if 'data' in kwargs:
-            self.fields['budget_group'].error_messages['does_not_exist'] = USER_ERR_4.format(id=kwargs['data']['budget_group'])
-            self.fields['name'].error_messages['blank'] = USER_ERR_1
-        else:
-            self.fields['budget_group'].error_messages['does_not_exist'] = USER_ERR_4.format(id='')
-            self.fields['name'].error_messages['blank'] = USER_ERR_1
-
-
-class InBudgetCategoryNameUpdateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BudgetCategory
-        fields = ['name']
-
-    def __init__(self, *args, **kwargs):
-        super(InBudgetCategoryNameUpdateSerializer, self).__init__(*args, **kwargs)
-        
-        self.fields['name'].error_messages['blank'] = USER_ERR_1
-        
-
-class InBudgetCategoryGroupIdUpdateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BudgetCategory
-        fields = ['budget_group']
-
-    def __init__(self, *args, **kwargs):
-        super(InBudgetCategoryGroupIdUpdateSerializer, self).__init__(*args, **kwargs)
-        
-        if 'data' in kwargs:
-            self.fields['budget_group'].error_messages['does_not_exist'] = USER_ERR_4.format(id=kwargs['data']['budget_group'])
-        else:
-            self.fields['budget_group'].error_messages['does_not_exist'] = USER_ERR_4.format(id='')
+    budget_group_id = serializers.CharField(
+        required=True,
+        allow_blank=False,
+        trim_whitespace=True,
+        validators=[budget_group_exists])
 
 
-class OutBudgetCategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BudgetCategory
-        fields = ['id', 'name', 'budget_group']
+class InRenameBudgetCategorySerializer(serializers.Serializer):
+    id = serializers.CharField(
+        required=True,
+        allow_blank=False,
+        trim_whitespace=True,
+        validators=[budget_category_exists])
+
+    name = serializers.CharField(
+        max_length=100,
+        required=True,
+        allow_blank=False,
+        trim_whitespace=True,
+        error_messages={'blank': USER_ERR_1})
+
+
+class InAssignGroupToBudgetCategorySerializer(serializers.Serializer):
+    id = serializers.CharField(
+        required=True,
+        allow_blank=False,
+        trim_whitespace=True,
+        validators=[budget_category_exists])
+
+    budget_group_id = serializers.CharField(
+        required=True,
+        allow_blank=False,
+        trim_whitespace=True,
+        validators=[budget_group_exists])
+
+
+class InDeleteBudgetCategorySerializer(serializers.Serializer):
+    id = serializers.CharField(
+        required=True,
+        allow_blank=False,
+        trim_whitespace=True,
+        validators=[budget_category_exists])
+
+
+class InGetBudgetCategorySerializer(serializers.Serializer):
+    id = serializers.CharField(
+        required=True,
+        allow_blank=False,
+        trim_whitespace=True,
+        validators=[budget_category_exists])
+
+
+class OutBudgetCategorySerializer(serializers.Serializer):
+    id = serializers.CharField(
+        required=True,
+        allow_blank=False,
+        trim_whitespace=True)
+
+    name = serializers.CharField(
+        max_length=100,
+        required=True,
+        allow_blank=False,
+        trim_whitespace=True)
+
+    budget_group_id = serializers.CharField(
+        required=True,
+        allow_blank=False,
+        trim_whitespace=True)

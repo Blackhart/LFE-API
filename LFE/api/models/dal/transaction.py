@@ -9,7 +9,7 @@ def record_transaction(date, label, amount, bank_account):
         date (str): Date of the transaction. Should be of the form 'AAAA-MM-DD'
         label (str): Label of the transaction
         amount (float): Amount of the transaction
-        bank_account (str): Bank account ID to link to
+        bank_account (BankAccount): Bank account to link to
 
     Returns:
         Transaction: The created transaction
@@ -44,7 +44,7 @@ def update_transaction(id, date, label, amount, bank_account):
         date (str): Date of the transaction. Should be of the form 'AAAA-MM-DD'
         label (str): Label of the transaction
         amount (float): Amount of the transaction
-        bank_account (str): Bank account ID to link to
+        bank_account (BankAccount): Bank account to link to
     """
     transaction = get_transaction(id)
 
